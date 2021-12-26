@@ -10,6 +10,8 @@
  * @subpackage Hupa_Api_Editor/includes
  */
 
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * Fired during plugin activation.
  *
@@ -22,15 +24,20 @@
  */
 class Hupa_Api_Editor_Activator {
 
-	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function activate() {
+
+    /**
+     * Short Description. (use period)
+     *
+     * Long Description.
+     *
+     * @since    1.0.0
+     */
+	public static function activate()
+    {
 
 	}
+
+
+
 
 }

@@ -19,10 +19,10 @@
  * Version:           1.0.0
  * Author:            Jens Wiecker
  * Author URI:        http://jenswiecker.de
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       hupa-api-editor
- * Domain Path:       /languages
+ * License:           MIT License
+
+ * Tested up to:      5.8
+ * Stable tag:        1.0.0
  */
 
 // If this file is called directly, abort.
@@ -35,8 +35,22 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-const HUPA_API_EDITOR_VERSION = '1.0.0';
 
+//PLUGIN VERSION
+$plugin_data = get_file_data(dirname(__FILE__) . '/hupa-api-editor.php', array('Version' => 'Version'), false);
+define("HUPA_API_EDITOR_VERSION", $plugin_data['Version']);
+//DEFINE MIN PHP VERSION
+const HUPA_API_EDITOR_MIN_PHP_VERSION = '8.0';
+//DEFINE MIN WordPress VERSION
+const HUPA_API_EDITOR_MIN_WP_VERSION = '5.7';
+//PLUGIN ROOT PATH
+define('HUPA_API_EDITOR_PLUGIN_DIR', dirname(__FILE__));
+
+//PLUGIN SLUG
+define('HUPA_API_EDITOR_SLUG_PATH', plugin_basename(__FILE__));
+define('HUPA_API_EDITOR_BASENAME', plugin_basename(__DIR__));
+//PLUGIN URL
+define('HUPA_API_EDITOR_PLUGIN_URL', plugins_url('hupa-api-editor'));
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-hupa-api-editor-activator.php
@@ -58,6 +72,50 @@ function deactivate_hupa_api_editor() {
 register_activation_hook( __FILE__, 'activate_hupa_api_editor' );
 register_deactivation_hook( __FILE__, 'deactivate_hupa_api_editor' );
 
+
+if ( is_admin() ) {
+
+    /**
+     * @link http://w-shadow.com/blog/2011/06/02/automatic-updates-for-commercial-themes/
+     * @link https://github.com/YahnisElsts/plugin-update-checker
+     * @link https://github.com/YahnisElsts/wp-update-server
+     */
+    if( ! class_exists( 'Puc_v4_Factory' ) ) {
+        require_once join( DIRECTORY_SEPARATOR, array( HUPA_API_EDITOR_SLUG_PATH, 'vendor', 'autoload.php') );
+    }
+
+    /*$MyUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+    // CHANGE THIS FOR YOUR UPDATE URL
+        'https://update.joeszalai.org/?action=get_metadata&slug=' . HUPA_API_EDITOR_SLUG_PATH, //Metadata URL.
+        __FILE__, //Full path to the main plugin file.
+        HUPA_API_EDITOR_SLUG_PATH //Plugin slug. Usually it's the same as the name of the directory.
+    );
+
+    /**
+     * add plugin upgrade notification
+     * https://andidittrich.de/2015/05/howto-upgrade-notice-for-wordpress-plugins.html
+     */
+    add_action( 'in_plugin_update_message-' . HUPA_API_EDITOR_SLUG_PATH . '/' . HUPA_API_EDITOR_SLUG_PATH .'.php', 'plugin_name_show_upgrade_notification', 10, 2 );
+    function plugin_name_show_upgrade_notification( $current_plugin_metadata, $new_plugin_metadata ) {
+
+        /**
+         * Check "upgrade_notice" in readme.txt.
+         *
+         * Eg.:
+         * == Upgrade Notice ==
+         * = 20180624 = <- new version
+         * Notice		<- message
+         *
+         */
+        if ( isset( $new_plugin_metadata->upgrade_notice ) && strlen( trim( $new_plugin_metadata->upgrade_notice ) ) > 0 ) {
+
+            // Display "upgrade_notice".
+            echo sprintf( '<span style="background-color:#d54e21;padding:10px;color:#f9f9f9;margin-top:10px;display:block;"><strong>%1$s: </strong>%2$s</span>', esc_attr( 'Important Upgrade Notice', 'exopite-multifilter' ), esc_html( rtrim( $new_plugin_metadata->upgrade_notice ) ) );
+
+        }
+    }
+}
+
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
@@ -73,10 +131,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-hupa-api-editor.php';
  *
  * @since    1.0.0
  */
-function run_hupa_api_editor() {
 
-	$plugin = new Hupa_Api_Editor();
-	$plugin->run();
-
-}
-run_hupa_api_editor();
+global $pbt_hupa_api_editor;
+$pbt_hupa_api_editor = new Hupa_Api_Editor();
+$pbt_hupa_api_editor->run();

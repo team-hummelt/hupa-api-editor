@@ -25,23 +25,17 @@
  * @author     Jens Wiecker <email@jenswiecker.de>
  */
 class Hupa_Api_Editor_i18n {
-
-
 	/**
 	 * Load the plugin text domain for translation.
 	 *
 	 * @since    1.0.0
 	 */
-	public function load_plugin_textdomain() {
+	public function load_api_editor_textdomain():void {
 
-		load_plugin_textdomain(
-			'hupa-api-editor',
-			false,
-			dirname(plugin_basename(__FILE__), 2) . '/languages/'
-		);
-
+        load_plugin_textdomain(
+            'hupa-api-editor',
+            false,
+            dirname(plugin_basename(__FILE__), 2) . '/languages/'
+        );
 	}
-
-
-
 }
