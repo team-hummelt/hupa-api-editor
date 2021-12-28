@@ -1,8 +1,9 @@
 <?php
 defined( 'ABSPATH' ) or die();
 /**
- * ADMIN HOME SITE
- * @package Hummelt & Partner WordPress Theme
+ * HUPA API LICENSE
+ * @Since 1.0.0
+ * @package Hummelt & Partner WordPress Plugin
  * Copyright 2021, Jens Wiecker
  * License: Commercial - goto https://www.hummelt-werbeagentur.de/
  */

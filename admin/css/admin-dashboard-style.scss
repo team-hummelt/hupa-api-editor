@@ -4,7 +4,7 @@ $bg-gray: #f5f5f5;
 $hupa-color: #e11d2a;
 $tooltip-bg: #e11d2a;
 
-body .wp-bs-starter-wrapper {
+body .api-editor {
   font-size: 1rem!important;
 }
 
@@ -152,7 +152,7 @@ background-color: #fdfdfd!important;
 }
 
 //WRAPPER
-.wp-bs-starter-wrapper {
+.api-editor {
 
   input[type=radio]:checked::before {
     content: "";
@@ -473,7 +473,7 @@ background-color: #fdfdfd!important;
     border-radius: 0;
   }
 
-  .wp-bs-custom-wrapper .accordion-item {
+  .api-editor .accordion-item {
     background-color: #fff;
     border: unset;
   }
@@ -793,112 +793,5 @@ background-color: #fdfdfd!important;
   }
 
 }
-
-#toplevel_page_api-editor div.wp-menu-image.dashicons-before.dashicons-admin-multisite::before {
-  color: #ffc678 !important;
-}
-
-.card {
-  position: relative;
-  margin-top: unset;
-  padding: unset;
-  min-width: auto;
-  max-width: 100%;
-  border: unset;
-  box-shadow: unset;
-  background: unset;
-  box-sizing: border-box;
-}
-
-#snackbar-success {
-  visibility: hidden;
-  min-width: 300px;
-  font-size: 1rem;
-  margin-left: -125px;
-  background-color: #378437;
-  border: 2px solid #fff;
-  color: #fff;
-  text-align: center;
-  border-radius: 2px;
-  padding: 16px;
-  position: fixed;
-  z-index: 99999;
-  left: 50%;
-  bottom: 30px
-}
-
-#snackbar-success.show {
-  visibility: visible;
-  -webkit-animation: fadein .5s, fadeout .5s 2.5s;
-  animation: fadein .5s, fadeout .5s 2.5s
-}
-
-#snackbar-warning {
-  visibility: hidden;
-  min-width: 300px;
-  margin-left: -125px;
-  font-size: 1rem;
-  background-color: #d73814;
-  border: 2px solid #fff;
-  color: #fff;
-  text-align: center;
-  border-radius: 2px;
-  padding: 16px;
-  position: fixed;
-  z-index: 99999;
-  left: 50%;
-  bottom: 30px
-}
-
-#snackbar-warning.show {
-  visibility: visible;
-  -webkit-animation: fadein .5s, fadeout .5s 2.5s;
-  animation: fadein .5s, fadeout .5s 2.5s
-}
-
-@-webkit-keyframes fadein {
-  from {
-    bottom: 0;
-    opacity: 0
-  }
-  to {
-    bottom: 30px;
-    opacity: 1
-  }
-}
-
-@keyframes fadein {
-  from {
-    bottom: 0;
-    opacity: 0
-  }
-  to {
-    bottom: 30px;
-    opacity: 1
-  }
-}
-
-@-webkit-keyframes fadeout {
-  from {
-    bottom: 30px;
-    opacity: 1
-  }
-  to {
-    bottom: 0;
-    opacity: 0
-  }
-}
-
-@keyframes fadeout {
-  from {
-    bottom: 30px;
-    opacity: 1
-  }
-  to {
-    bottom: 0;
-    opacity: 0
-  }
-}
-
 //end WRAPPER
 

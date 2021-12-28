@@ -5,7 +5,7 @@ namespace HupaEditorAPIExec\EXEC;
 defined('ABSPATH') or die();
 
 use stdClass;
-use Hupa\BsPluginLicense\HupaApiPluginBSServerHandle;
+use Hupa\ApiEditorPluginLicense\HupaApiPluginApiEditorServerHandle;
 
 if (!function_exists('get_plugins')) {
     require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -89,8 +89,10 @@ final class ApiEditorLicenseExecAPI
                     'type' => 'aktivierungs_file'
                 ];
 
-                $api = HupaApiPluginBSServerHandle::init();
-                $datei = $api->BSFormApiDownloadFile(get_option('hupa_server_url').'download', $body);
+                $api = HupaApiPluginApiEditorServerHandle::init();
+
+
+                $datei = $api->HupaApiEditorApiDownloadFile(get_option('hupa_server_url').'download', $body);
                 if($datei){
                     $file = HUPA_API_EDITOR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;
                     file_put_contents($file, $datei);
@@ -119,7 +121,7 @@ final class ApiEditorLicenseExecAPI
                 delete_option('hupa_api_editor_client_secret');
                 delete_option('hupa_api_editor_license_url');
                 delete_option('hupa_api_editor_product_install_authorize');
-                update_option('hupa_api_editor_message', 'Das Plugin BS-Formular wurde deaktiviert. Wenden Sie sich an den Administrator.');
+                update_option('hupa_api_editor_message', 'Das Plugin Hupa-Api-Editor wurde deaktiviert. Wenden Sie sich an den Administrator.');
                 $status = true;
                 $msg = 'Plugin erfolgreich deaktiviert.';
                 break;
@@ -128,8 +130,8 @@ final class ApiEditorLicenseExecAPI
                     'version' => HUPA_API_EDITOR_VERSION,
                     'type' => 'aktivierungs_file'
                 ];
-                $api = HupaApiPluginBSServerHandle::init();
-                $datei = $api->BSFormApiDownloadFile(get_option('hupa_server_url').'download', $body);
+                $api = HupaApiPluginApiEditorServerHandle::init();
+                $datei = $api->HupaApiEditorApiDownloadFile(get_option('hupa_server_url').'download', $body);
                 if($datei){
                     $file = HUPA_API_EDITOR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;
                     file_put_contents($file, $datei);
@@ -169,7 +171,7 @@ final class ApiEditorLicenseExecAPI
                 break;
             case'10':
                 if($getJob->update_type == '1' || $getJob->update_type == '2'){
-                   $updateUrl =  apply_filters('bs_formular_scope_resource', 'hupa-update/url');
+                   $updateUrl =  apply_filters('hupa_api_editor_scope_resource', 'hupa-update/url');
                    $url = $updateUrl->url;
                    $update_aktiv = true;
                 } else {
@@ -187,7 +189,7 @@ final class ApiEditorLicenseExecAPI
                 $msg = 'Update Methode aktualisiert.';
                 break;
             case'11':
-               $updateUrl = apply_filters('bs_formular_scope_resource', 'hupa-update/url');
+               $updateUrl = apply_filters('hupa_api_editor_scope_resource', 'hupa-update/url');
                $updOption = get_option('hupa_api_editor_server_api');
                $updOption['update_url'] = $updateUrl->url;
                update_option('hupa_api_editor_server_api', $updOption);
@@ -249,14 +251,14 @@ final class ApiEditorLicenseExecAPI
             'message' => $message
         ];
 
-        $remoteApi = HupaApiPluginBSServerHandle::init();
-        $sendErr = $remoteApi->bsFormularPOSTApiResource('error-log', $body);
+        $remoteApi = HupaApiPluginApiEditorServerHandle::init();
+        $sendErr = $remoteApi->hupaApiEditorServerPOSTApiResource('error-log', $body);
     }
 
     public function get_post_scope_data($scope, $body = []) {
-       $post = HupaApiPluginBSServerHandle::init();
+       $post = HupaApiPluginApiEditorServerHandle::init();
 
-      return $post->bsFormularPOSTApiResource($scope, $body);
+      return $post->hupaApiEditorServerPOSTApiResource($scope, $body);
     }
 
 } //endClass

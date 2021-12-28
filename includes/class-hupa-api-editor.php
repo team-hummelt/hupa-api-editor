@@ -14,6 +14,9 @@
  */
 
 use JetBrains\PhpStorm\NoReturn;
+use Hupa\EditorLicense\RegisterHupaApiEditor;
+use Hupa\ApiEditorPluginLicense\HupaApiPluginApiEditorServerHandle;
+use HupaEditorAPIExec\EXEC\ApiEditorLicenseExecAPI;
 
 /**
  * The core plugin class.
@@ -84,6 +87,23 @@ class Hupa_Api_Editor
      */
     public $main;
 
+
+    /**
+     * Activate Plugin License.
+     *
+     * @since    1.0.0
+     * @var object      The license class.
+     */
+    public $license;
+
+    /**
+     * WP-Remote Plugin License.
+     *
+     * @since    1.0.0
+     * @var object      The Remote class.
+     */
+    public $remote;
+
     /**
      * Define the core functionality of the plugin.
      *
@@ -108,13 +128,15 @@ class Hupa_Api_Editor
         $this->check_dependencies();
         $this->load_dependencies();
         $this->set_locale();
-        $this->define_admin_hooks();
-        $this->define_public_hooks();
-
+        $this->hupa_api_edit_license();
+        if(get_option('api_editor_product_install_authorize')) {
+            $this->define_admin_hooks();
+            $this->define_public_hooks();
+        }
     }
 
     /**
-     * Load the required dependencies for this plugin.
+     * Validate Hupa Api Edit License.
      *
      * Include the following files that make up the plugin:
      *
@@ -131,6 +153,24 @@ class Hupa_Api_Editor
      */
     private function load_dependencies()
     {
+
+        /**
+         * The class, Registers and activates the
+         * core plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/license/register-hupa-plugin.php';
+
+        /**
+         * The class, Registers WP-Remote
+         * core plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/license/hupa_client_api_wp_remote.php';
+
+        /**
+         * The class, Registers WP-Remote EXEC
+         * core plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/license/api-exec-class.php';
 
         /**
          * The class responsible for orchestrating the actions and filters of the
@@ -155,12 +195,10 @@ class Hupa_Api_Editor
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-hupa-api-editor-public.php';
 
-
         /**
          * The class responsible for defining all actions for ADMIN AJAX
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-hupa-api-editor-ajax.php';
-
 
         /**
          * The class responsible for defining all actions for PUBLIC AJAX
@@ -184,7 +222,58 @@ class Hupa_Api_Editor
     {
         $plugin_i18n = new Hupa_Api_Editor_i18n();
         $this->loader->add_action('init', $plugin_i18n, 'load_api_editor_textdomain');
+    }
 
+    /**
+     * Validate Hupa Api Edit License.
+     *
+     * Uses the class RegisterHupaApiEditor to register the licence for the plugin
+     * @since    1.0.0
+     * @access   private
+     */
+    private function hupa_api_edit_license() {
+
+        /** Register Admin License Menu AND AJAX Request
+         * @since    1.0.0
+         */
+        $this->license = RegisterHupaApiEditor::instance($this->get_plugin_name(),$this->get_version(), $this->main);
+
+        /** Register Admin License Menu
+         * @since    1.0.0
+         */
+        if(!get_option('api_editor_product_install_authorize')) {
+            $this->loader->add_action('admin_menu', $this->license, 'register_license_hupa_api_editor_plugin');
+        }
+
+        /** Register Admin License Menu Functions
+         * @since    1.0.0
+         */
+        $this->loader->add_action('wp_ajax_ApiEditorLicenceHandle', $this->license, 'prefix_ajax_ApiEditorLicenceHandle');
+        $this->loader->add_action( 'init',$this->license , 'hupa_api_editor_license_site_trigger_check' );
+        $this->loader->add_action( 'template_redirect',$this->license, 'hupa_api_editor_license_callback_trigger_check');
+
+
+        /** Register Admin License API WP-Remote
+         * @since    1.0.0
+         */
+        $this->remote = HupaApiPluginApiEditorServerHandle::init();
+        global $hupaApiEditorSrv;
+        $hupaApiEditorSrv = $this->remote;
+
+        /** Register Admin License API WP-Remote Functions
+         * @since    1.0.0
+         */
+
+        $this->loader->add_filter('get_hupa_api_editor_api_urls', $this->remote, 'HupaApiEditorGetApiUrl');
+        //TODO JOB POST Resources Endpoints
+        $this->loader->add_filter('hupa_api_editor_scope_resource', $this->remote, 'hupaApiEditorPOSTApiResource', 10, 2);
+        $this->loader->add_filter('hupa_api_scope_resource', $this->remote, 'hupaApiEditorServerPOSTApiResource', 10, 2);
+        //TODO JOB GET Resources Endpoints
+        $this->loader->add_filter('get_scope_resource', $this->remote, 'HupaApiEditorGETApiResource', 10, 2);
+        //TODO JOB VALIDATE SOURCE BY Authorization Code
+        $this->loader->add_filter('get_hupa_api_editor_resource_authorization_code', $this->remote, 'HupaApiEditorInstallByAuthorizationCode');
+        //TODO JOB SERVER URL ÄNDERN FALLS NÖTIG
+        $this->loader->add_filter('hupa_api_editor_update_server_url', $this->remote, 'HupaApiEditorUpdateServerUrl');
     }
 
     /**
@@ -199,19 +288,26 @@ class Hupa_Api_Editor
 
         $this->admin = new Hupa_Api_Editor_Admin($this->get_plugin_name(), $this->get_version(), $this->main);
 
-
         /** Register Admin Menu
          * @since    1.0.0
          */
         $this->loader->add_action('admin_menu', $this->admin, 'create_menu', 0);
+
+        /** Register Plugin Settings Menu
+         * @since    1.0.0
+         */
+        $this->loader->add_filter( 'plugin_action_links_' . HUPA_API_EDITOR_SLUG_PATH, $this->admin, 'api_editor_plugin_add_action_link' );
 
         /** Register Ajax Prefix ADMIN Action
          * @since    1.0.0
          */
         $this->loader->add_action('wp_ajax_HupaApiEditorHandle', $this->admin, 'prefix_ajax_HupaApiEditorHandle');
 
+        /** Register ADMIN Enqueue Style Action
+         * @since    1.0.0
+         */
         $this->loader->add_action('admin_enqueue_scripts', $this->admin, 'enqueue_styles');
-        $this->loader->add_action('admin_enqueue_scripts', $this->admin, 'enqueue_scripts');
+        //$this->loader->add_action('admin_enqueue_scripts', $this->admin, 'enqueue_scripts');
 
     }
 
@@ -222,12 +318,11 @@ class Hupa_Api_Editor
      * @since    1.0.0
      * @access   private
      */
-    private function  check_dependencies(): void
+    private function check_dependencies(): void
     {
         global $wp_version;
         if (version_compare(PHP_VERSION, HUPA_API_EDITOR_MIN_PHP_VERSION, '<') || $wp_version < HUPA_API_EDITOR_MIN_WP_VERSION) {
             $this->maybe_self_deactivate();
-            return;
         }
     }
 
@@ -273,6 +368,7 @@ class Hupa_Api_Editor
          */
         $this->loader->add_action('wp_ajax_nopriv_HupaApiEditorNoAdmin', $this->public, 'prefix_ajax_HupaApiEditorNoAdmin');
         $this->loader->add_action('wp_ajax_HupaApiEditorNoAdmin', $this->public, 'prefix_ajax_HupaApiEditorNoAdmin');
+
 
         $this->loader->add_action('wp_enqueue_scripts', $this->public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $this->public, 'enqueue_scripts');

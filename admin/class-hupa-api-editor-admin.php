@@ -79,7 +79,7 @@ class Hupa_Api_Editor_Admin {
             'dashicons-admin-multisite', 9
         );
 
-        add_submenu_page(
+        $hook_suffix = add_submenu_page(
             'api-editor',
             __( 'API-Editor - Settings', 'hupa-api-editor' ),
             __( 'API-Editor Settings ', 'hupa-api-editor' ),
@@ -88,11 +88,46 @@ class Hupa_Api_Editor_Admin {
             array( $this, 'admin_hupa_api_editor_page' )
         );
 
+        add_action('load-' . $hook_suffix, array($this, 'hupa_api_editor_load_ajax_admin_options_script'));
+
+    }
+
+    /**
+     * Register the Plugin Settings Link.
+     *
+     * @since    1.0.0
+     */
+    public static function api_editor_plugin_add_action_link( $data ) {
+        // check permission
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return $data;
+        }
+
+        return array_merge(
+            $data,
+            array(
+                sprintf(
+                    '<a href="%s">%s</a>',
+                    add_query_arg(
+                        array(
+                            'page' => 'api-editor'
+                        ),
+                        admin_url( 'admin.php' )
+                    ),
+                    __( "Settings", "api-editor" )
+                )
+            )
+        );
     }
 
 
     public function admin_hupa_api_editor_page() {
         require 'partials/hupa-api-editor-startseite.php';
+    }
+
+    public function hupa_api_editor_load_ajax_admin_options_script() {
+        add_action( 'admin_enqueue_scripts', array( $this, 'load_enqueue_styles' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'load_enqueue_scripts' ) );
     }
 
 
@@ -110,7 +145,7 @@ class Hupa_Api_Editor_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function load_enqueue_styles() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -136,7 +171,7 @@ class Hupa_Api_Editor_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function load_enqueue_scripts() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -166,4 +201,10 @@ class Hupa_Api_Editor_Admin {
         ));
 	}
 
+    public function enqueue_styles()
+    {
+        wp_enqueue_style($this->plugin_name.'admin-tools', plugin_dir_url( __FILE__ ) . 'css/tools.css', array(), $this->version, 'all');
+    }
+
 }
+//ORGINAL

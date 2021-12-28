@@ -30,11 +30,6 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
 
 //PLUGIN VERSION
 $plugin_data = get_file_data(dirname(__FILE__) . '/hupa-api-editor.php', array('Version' => 'Version'), false);
@@ -45,12 +40,13 @@ const HUPA_API_EDITOR_MIN_PHP_VERSION = '8.0';
 const HUPA_API_EDITOR_MIN_WP_VERSION = '5.7';
 //PLUGIN ROOT PATH
 define('HUPA_API_EDITOR_PLUGIN_DIR', dirname(__FILE__));
-
 //PLUGIN SLUG
 define('HUPA_API_EDITOR_SLUG_PATH', plugin_basename(__FILE__));
 define('HUPA_API_EDITOR_BASENAME', plugin_basename(__DIR__));
 //PLUGIN URL
 define('HUPA_API_EDITOR_PLUGIN_URL', plugins_url('hupa-api-editor'));
+
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-hupa-api-editor-activator.php
@@ -74,7 +70,6 @@ register_deactivation_hook( __FILE__, 'deactivate_hupa_api_editor' );
 
 
 if ( is_admin() ) {
-
     /**
      * @link http://w-shadow.com/blog/2011/06/02/automatic-updates-for-commercial-themes/
      * @link https://github.com/YahnisElsts/plugin-update-checker
@@ -93,19 +88,14 @@ if ( is_admin() ) {
 
     /**
      * add plugin upgrade notification
-     * https://andidittrich.de/2015/05/howto-upgrade-notice-for-wordpress-plugins.html
      */
     add_action( 'in_plugin_update_message-' . HUPA_API_EDITOR_SLUG_PATH . '/' . HUPA_API_EDITOR_SLUG_PATH .'.php', 'plugin_name_show_upgrade_notification', 10, 2 );
     function plugin_name_show_upgrade_notification( $current_plugin_metadata, $new_plugin_metadata ) {
 
         /**
-         * Check "upgrade_notice" in readme.txt.
          *
-         * Eg.:
-         * == Upgrade Notice ==
-         * = 20180624 = <- new version
-         * Notice		<- message
-         *
+         * @since    1.0.0
+         * Notice	<- message
          */
         if ( isset( $new_plugin_metadata->upgrade_notice ) && strlen( trim( $new_plugin_metadata->upgrade_notice ) ) > 0 ) {
 

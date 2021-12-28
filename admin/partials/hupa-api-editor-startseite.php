@@ -8,7 +8,7 @@ defined('ABSPATH') or die();
  */
 ?>
 
-<div class="wp-bs-starter-wrapper">
+<div class="api-editor">
 
     <div class="container">
         <div class="card card-license shadow-sm">
@@ -29,7 +29,7 @@ defined('ABSPATH') or die();
                             data-type="start"
                             type="button"
                             data-bs-toggle="collapse" data-bs-target="#collapseApiEditorStartSite"
-                            class="btn-formular-collapse btn btn-hupa btn-outline-secondary btn-sm active" disabled>
+                            class="btn-editor-collapse btn btn-hupa btn-outline-secondary btn-sm active" disabled>
                         <i class="fa fa-wrench"></i>&nbsp;
                         <?= __('Settings', 'hupa-api-editor') ?>
                     </button>

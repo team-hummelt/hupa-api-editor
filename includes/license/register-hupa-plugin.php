@@ -12,33 +12,65 @@ defined('ABSPATH') or die();
  */
 final class RegisterHupaApiEditor
 {
+    /**
+     * The Instance of this plugin.
+     *
+     * @since    1.0.0
+     */
     private static $instance;
+
+    /**
+     * The ID of this plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      string    $plugin_name    The ID of this plugin.
+     */
+    private string $plugin_name;
+
+    /**
+     * The version of this plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      string    $version    The current version of this plugin.
+     */
+    private string $version;
+
+    /**
+     * Store plugin main class to allow public access.
+     *
+     * @since    1.0.0
+     * @var object      The main class.
+     */
+    public $main;
+
+
+    /**
+     * Initialize the class and set its properties.
+     *
+     * @since    1.0.0
+     * @param    string     $plugin_name    The name of this plugin.
+     * @param    string     $version        The version of this plugin.
+     */
 
     /**
      * @return static
      */
-    public static function instance(): self
+    public static function instance(string $plugin_name, string $version, $plugin_main): self
     {
         if (is_null(self::$instance)) {
-            self::$instance = new self();
+            self::$instance = new self($plugin_name, $version, $plugin_main);
         }
         return self::$instance;
     }
 
-    public function __construct(){
+    public function __construct(string $plugin_name, string $version, $plugin_main){
 
-    }
+        $this->plugin_name = $plugin_name;
+        $this->version = $version;
+        $this->main = $plugin_main;
 
-    public function init_hupa_api_editor(): void
-    {
-
-        // TODO REGISTER LICENSE MENU
-        if(!get_option('api_editor_product_install_authorize')) {
-            add_action('admin_menu', array($this, 'register_license_bs_formular_plugin'));
-        }
-        add_action('wp_ajax_BsFormularLicenceHandle', array($this, 'prefix_ajax_BsFormularLicenceHandle'));
-        add_action( 'init', array( $this, 'bs_formular_license_site_trigger_check' ) );
-        add_action( 'template_redirect',array($this, 'bs_formular_license_callback_trigger_check' ));
     }
 
     /**
@@ -47,11 +79,11 @@ final class RegisterHupaApiEditor
      * =================================================
      */
 
-    public function register_license_bs_formular_plugin(): void
+    public function register_license_hupa_api_editor_plugin(): void
     {
         $hook_suffix = add_menu_page(
-            __('API Editor', 'bs-formular'),
-            __('API Editor', 'bs-formular'),
+            __('API Editor v' .$this->version, 'hupa-api-editor'),
+            __('API Editor v'.$this->version, 'hupa-api-editor'),
             'manage_options',
             'hupa-api-editor-license',
             array($this, 'hupa_api_editor_license'),
@@ -75,11 +107,11 @@ final class RegisterHupaApiEditor
 
     public function hupa_api_editor_load_ajax_admin_options_script(): void
     {
-        add_action('admin_enqueue_scripts', array($this, 'load_bs_formular_admin_style'));
-        $title_nonce = wp_create_nonce('bs_formular_license_handle');
-        wp_register_script('bs-formular-selector-ajax-script', '', [], '', true);
-        wp_enqueue_script('bs-formular-selector-ajax-script');
-        wp_localize_script('bs-formular-selector-ajax-script', 'bs_formulare_license_obj', array(
+        add_action('admin_enqueue_scripts', array($this, 'load_hupa_api_editor_admin_style'));
+        $title_nonce = wp_create_nonce('hupa_api_editor_license_handle');
+        wp_register_script('hupa-api-editor-license-ajax-script', '', [], '', true);
+        wp_enqueue_script('hupa-api-editor-license-ajax-script');
+        wp_localize_script('hupa-api-editor-license-ajax-script', 'hup_api_editor_license_obj', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => $title_nonce
         ));
@@ -91,10 +123,10 @@ final class RegisterHupaApiEditor
      * ==================================================
      */
 
-    public function prefix_ajax_BsFormularLicenceHandle(): void {
+    public function ApiEditorLicenceHandle(): void {
         $responseJson = null;
-        check_ajax_referer( 'bs_formular_license_handle' );
-        require 'bs-formular-license-ajax.php';
+        check_ajax_referer( 'hupa_api_editor_license_handle' );
+        require 'hupa-api-editor-license-ajax.php';
         wp_send_json( $responseJson );
     }
 
@@ -102,12 +134,12 @@ final class RegisterHupaApiEditor
        TODO GENERATE CUSTOM SITES
     =================================================
     */
-    public function bs_formular_license_site_trigger_check(): void {
+    public function hupa_api_editor_license_site_trigger_check(): void {
         global $wp;
         $wp->add_query_var( HUPA_API_EDITOR_BASENAME );
     }
 
-    function bs_formular_license_callback_trigger_check(): void {
+    function hupa_api_editor_license_callback_trigger_check(): void {
        if ( get_query_var( HUPA_API_EDITOR_BASENAME ) === HUPA_API_EDITOR_BASENAME) {
             require 'api-request-page.php';
             exit;
@@ -120,14 +152,10 @@ final class RegisterHupaApiEditor
      * ====================================================
      */
 
-    public function load_bs_formular_admin_style(): void
+    public function load_hupa_api_editor_admin_style(): void
     {
-        wp_enqueue_style('bs-formular-license-style',plugins_url('bs-formular') . '/inc/license/assets/license-backend.css', array(), '');
-        wp_enqueue_script('js-bs-formular-license', plugins_url('bs-formular') . '/inc/license/license-script.js', array(), '', true );
+        wp_enqueue_style('api-editor-license-style',plugins_url(HUPA_API_EDITOR_BASENAME) . '/includes/license/assets/license-backend.css', array(),$this->version);
+        wp_enqueue_script('api-editor-formular-license', plugins_url(HUPA_API_EDITOR_BASENAME) . '/includes/license/license-script.js', array(), $this->version, true );
     }
 }
 
-$register_hupa_api_editor = RegisterHupaApiEditor::instance();
-if (!empty($register_hupa_api_editor)) {
-    $register_hupa_api_editor->init_hupa_api_editor();
-}

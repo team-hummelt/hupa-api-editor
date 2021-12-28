@@ -10,13 +10,8 @@
 
 // WORDPRESS STYLES
 
-#toplevel_page_bs-formular div.wp-menu-image.dashicons-before.dashicons-email-alt::before {
-  color: #2bff76 !important;
-}
-
-//
-div.wp-menu-image.dashicons-before.dashicons-admin-network::before {
-  color: red !important;
+#toplevel_page_api-editor div.wp-menu-image.dashicons-before.dashicons-admin-multisite::before {
+  color: #ffc678 !important;
 }
 
 .card {

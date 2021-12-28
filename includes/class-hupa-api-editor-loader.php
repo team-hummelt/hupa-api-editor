@@ -86,7 +86,7 @@ class Hupa_Api_Editor_Loader {
 	 * A utility function that is used to register the actions and hooks into a single
 	 * collection.
 	 *
-     * @since 1.0.0
+     * @since  1.0.0
 	 * @param  array     $hooks            The collection of hooks that is being registered (that is, actions or filters).
 	 * @param  string    $hook             The name of the WordPress filter that is being registered.
 	 * @param  object    $component        A reference to the instance of the object on which the filter is defined.

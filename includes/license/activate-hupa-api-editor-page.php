@@ -13,15 +13,15 @@ $aktivShow = 'd-none';
 $registerShow = '';
 $file = '';
 if ($code) {
-    $response = apply_filters('get_bs_formular_resource_authorization_code', $code);
+    $response = apply_filters('get_hupa_api_editor_resource_authorization_code', $code);
     if ($response->status) {
         if ($response->if_file) {
             $file = HUPA_API_EDITOR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $response->aktivierung_path;
             file_put_contents($file, $response->install_datei);
         }
-        update_option('bs_formular_install_time', current_time('mysql'));
-        update_option('bs_formular_product_install_authorize', true);
-        delete_option('bs_formular_message');
+        update_option('hupa_api_editor_install_time', current_time('mysql'));
+        update_option('hupa_api_editor_product_install_authorize', true);
+        delete_option('hupa_api_editor_message');
     } else {
         $errMsg = 'Plugin konnte nicht aktiviert werden!';
     }
@@ -35,10 +35,10 @@ $reloadUrl=admin_url();
     <div class="container">
         <div class="card card-license">
             <div class="card-body shadow-license-box">
-                <h5 class="card-title"><i class="wp-blue bi bi-exclude"></i>&nbsp;Plugin BS-Formular aktivieren </h5>
-                <?php if(get_option('bs_formular_message')): ?>
+                <h5 class="card-title"><i class="wp-blue bi bi-exclude"></i>&nbsp;Plugin HUPA API-Editor aktivieren </h5>
+                <?php if(get_option('hupa_api_editor_message')): ?>
                 <p style="padding: 0 1rem; color: red;text-align: center"><i class="bi bi-exclamation-triangle-fill"></i>&nbsp;
-                    <b><?=get_option('bs_formular_message')?></b></p>
+                    <b><?=get_option('hupa_api_editor_message')?></b></p>
                 <?php endif; ?>
                 <hr>
                 <div id="licence_display_data">
@@ -62,18 +62,18 @@ $reloadUrl=admin_url();
                                 <div class="form-input-wrapper">
                                     <div class="col">
                                         <label for="ClientIDInput" class="form-label">
-                                            <?= __('Client ID', 'bs-formular') ?> <span
+                                            <?= __('Client ID', 'hupa-api-editor') ?> <span
                                                     class="text-danger">*</span></label>
                                         <input type="text" name="client_id" class="form-control"
-                                               value="<?= get_option('bs_formular_client_id') ?>"
+                                               value="<?= get_option('hupa_api_editor_client_id') ?>"
                                                id="ClientIDInput" autocomplete="cc-number" required>
                                     </div>
                                     <div class="col">
                                         <label for="clientSecretInput" class="form-label">
-                                            <?= __('Client secret', 'bs-formular') ?> <span
+                                            <?= __('Client Secret', 'hupa-api-editor') ?> <span
                                                     class="text-danger">*</span></label>
                                         <input type="text" name="client_secret" class="form-control"
-                                               value="<?= get_option('bs_formular_client_secret') ?>"
+                                               value="<?= get_option('hupa_api_editor_client_secret') ?>"
                                                id="clientSecretInput" autocomplete="cc-number" required>
                                     </div>
                                 </div>
@@ -88,7 +88,6 @@ $reloadUrl=admin_url();
                                     id="licenseErrMsg"><?= $errMsg ?></span>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
