@@ -20,7 +20,6 @@
  * Author:            Jens Wiecker
  * Author URI:        http://jenswiecker.de
  * License:           MIT License
-
  * Tested up to:      5.8
  * Stable tag:        1.0.0
  */
@@ -40,6 +39,8 @@ const HUPA_API_EDITOR_MIN_PHP_VERSION = '8.0';
 const HUPA_API_EDITOR_MIN_WP_VERSION = '5.7';
 //PLUGIN ROOT PATH
 define('HUPA_API_EDITOR_PLUGIN_DIR', dirname(__FILE__));
+//PLUGIN ADMIN DIR
+define('HUPA_API_EDITOR_ADMIN_DIR', dirname(__FILE__). DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR);
 //PLUGIN SLUG
 define('HUPA_API_EDITOR_SLUG_PATH', plugin_basename(__FILE__));
 define('HUPA_API_EDITOR_BASENAME', plugin_basename(__DIR__));
@@ -75,22 +76,31 @@ if ( is_admin() ) {
      * @link https://github.com/YahnisElsts/plugin-update-checker
      * @link https://github.com/YahnisElsts/wp-update-server
      */
+
+
     if( ! class_exists( 'Puc_v4_Factory' ) ) {
         require_once join( DIRECTORY_SEPARATOR, array( HUPA_API_EDITOR_SLUG_PATH, 'vendor', 'autoload.php') );
     }
 
-    /*$MyUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-    // CHANGE THIS FOR YOUR UPDATE URL
-        'https://update.joeszalai.org/?action=get_metadata&slug=' . HUPA_API_EDITOR_SLUG_PATH, //Metadata URL.
-        __FILE__, //Full path to the main plugin file.
-        HUPA_API_EDITOR_SLUG_PATH //Plugin slug. Usually it's the same as the name of the directory.
-    );
+    if ( get_option( 'hupa_api_editor_product_install_authorize' ) ) {
+        delete_transient('show_api_editor_lizenz_info');
+        if ( get_option( 'hupa_api_editor_server_api' )['update_aktiv'] == '1' ) {
+            $hupaApiEditorUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+                get_option( 'hupa_api_editor_server_api' )['update_url'],
+                __FILE__,
+                HUPA_API_EDITOR_BASENAME
+            );
+            if ( get_option( 'hupa_api_editor_server_api' )['update_type'] == '1' ) {
+                $hupaApiEditorUpdateChecker->getVcsApi()->enableReleaseAssets();
+            }
+        }
+    }
 
     /**
      * add plugin upgrade notification
      */
-    add_action( 'in_plugin_update_message-' . HUPA_API_EDITOR_SLUG_PATH . '/' . HUPA_API_EDITOR_SLUG_PATH .'.php', 'plugin_name_show_upgrade_notification', 10, 2 );
-    function plugin_name_show_upgrade_notification( $current_plugin_metadata, $new_plugin_metadata ) {
+    add_action( 'in_plugin_update_message-' . HUPA_API_EDITOR_SLUG_PATH . '/' . HUPA_API_EDITOR_SLUG_PATH .'.php', 'hupa_api_editor_show_upgrade_notification', 10, 2 );
+    function hupa_api_editor_show_upgrade_notification( $current_plugin_metadata, $new_plugin_metadata ) {
 
         /**
          *

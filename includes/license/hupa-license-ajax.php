@@ -2,7 +2,7 @@
 defined( 'ABSPATH' ) or die();
 /**
  * ADMIN AJAX
- * @package Hummelt & Partner HUPA Minify
+ * @package Hummelt & Partner HUPA API Editor
  * Copyright 2021, Jens Wiecker
  * License: Commercial - goto https://www.hummelt-werbeagentur.de/
  */
