@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="f218e36e-c543-46a7-b4be-407e78326db3" name="home-srv" url="https://git-dev.wiecker-web.de/">
-        <fileTransfer rootFolder="/web/git-dev/wp-content/plugins/hupa-api-editor" accessType="SFTP" host="192.168.188.3" port="22" sshConfigId="5a7cb857-ccee-4a07-b3de-f95b84bf6c8c" sshConfig="sh1_wiecker@192.168.188.3:22 key" keyPair="true">
+      <webServer id="c175adc6-bb16-4bb7-983d-d8bddb2c1d3c" name="home">
+        <fileTransfer rootFolder="/web/git-dev/wp-content/plugins/hupa-api-editor" accessType="SFTP" host="192.168.188.3" port="22" sshConfigId="a7903b84-36f8-4f68-b27d-ba9f616d2bee" sshConfig="sh1_wiecker@192.168.188.3:22 key" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
