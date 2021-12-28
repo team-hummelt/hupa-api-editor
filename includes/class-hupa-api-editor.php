@@ -14,9 +14,9 @@
  */
 
 use JetBrains\PhpStorm\NoReturn;
-use Hupa\EditorLicense\RegisterHupaApiEditor;
+use Hupa\RegisterApiEditorLicense\RegisterHupaApiEditor;
+use HupaApiEditorAPIExec\EXEC\HupaApiEditorLicenseExecAPI;
 use Hupa\ApiEditorPluginLicense\HupaApiPluginApiEditorServerHandle;
-use HupaEditorAPIExec\EXEC\ApiEditorLicenseExecAPI;
 
 /**
  * The core plugin class.
@@ -128,11 +128,12 @@ class Hupa_Api_Editor
         $this->check_dependencies();
         $this->load_dependencies();
         $this->set_locale();
-        $this->hupa_api_edit_license();
-        if(get_option('api_editor_product_install_authorize')) {
+        $this->register_hupa_api_edit_license();
+        if (get_option('hupa_api_editor_product_install_authorize')) {
             $this->define_admin_hooks();
-            $this->define_public_hooks();
         }
+        $this->define_public_hooks();
+
     }
 
     /**
@@ -142,6 +143,9 @@ class Hupa_Api_Editor
      *
      * - Hupa_Api_Editor_Loader. Orchestrates the hooks of the plugin.
      * - Hupa_Api_Editor_i18n. Defines internationalization functionality.
+     * - RegisterHupaApiEditor. Defines all hooks for the License.
+     * - HupaApiEditorLicenseExecAPI. Defines all hooks for the License Exec.
+     * - HupaApiPluginApiEditorServerHandle. Defines all hooks for the License API WP-Remote.
      * - Hupa_Api_Editor_Admin. Defines all hooks for the admin area.
      * - Hupa_Api_Editor_Public. Defines all hooks for the public side of the site.
      *
@@ -158,19 +162,17 @@ class Hupa_Api_Editor
          * The class, Registers and activates the
          * core plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/license/register-hupa-plugin.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/license/class-register-hupa-plugin.php';
 
         /**
-         * The class, Registers WP-Remote
-         * core plugin.
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/license/hupa_client_api_wp_remote.php';
-
-        /**
-         * The class, Registers WP-Remote EXEC
-         * core plugin.
+         * The class API EXEC.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/license/api-exec-class.php';
+
+        /**
+         * The class API WP-Remote Class.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/license/hupa_client_api_wp_remote.php';
 
         /**
          * The class responsible for orchestrating the actions and filters of the
@@ -183,6 +185,7 @@ class Hupa_Api_Editor
          * of the plugin.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-hupa-api-editor-i18n.php';
+
 
         /**
          * The class responsible for defining all actions that occur in the admin area.
@@ -231,49 +234,40 @@ class Hupa_Api_Editor
      * @since    1.0.0
      * @access   private
      */
-    private function hupa_api_edit_license() {
+    private function register_hupa_api_edit_license()
+    {
+        $this->license = RegisterHupaApiEditor::instance();
 
-        /** Register Admin License Menu AND AJAX Request
+        /** Register License Admin Menu
          * @since    1.0.0
          */
-        $this->license = RegisterHupaApiEditor::instance($this->get_plugin_name(),$this->get_version(), $this->main);
 
-        /** Register Admin License Menu
-         * @since    1.0.0
-         */
-        if(!get_option('api_editor_product_install_authorize')) {
+        // TODO REGISTER LICENSE MENU
+        if (!get_option('hupa_api_editor_install_authorize')) {
             $this->loader->add_action('admin_menu', $this->license, 'register_license_hupa_api_editor_plugin');
         }
 
-        /** Register Admin License Menu Functions
+        $this->loader->add_action('wp_ajax_HupaApiEditorLicenceHandle', $this->license, 'prefix_ajax_HupaApiEditorLicenceHandle');
+        $this->loader->add_action('init', $this->license, 'hupa_api_editor_license_site_trigger_check');
+        $this->loader->add_action('template_redirect', $this->license, 'hupa_api_editor_license_callback_trigger_check');
+
+        /** Register License API EXEC CLASS
          * @since    1.0.0
          */
-        $this->loader->add_action('wp_ajax_ApiEditorLicenceHandle', $this->license, 'prefix_ajax_ApiEditorLicenceHandle');
-        $this->loader->add_action( 'init',$this->license , 'hupa_api_editor_license_site_trigger_check' );
-        $this->loader->add_action( 'template_redirect',$this->license, 'hupa_api_editor_license_callback_trigger_check');
+        global $hupa_api_editor_license_exec;
+        $hupa_api_editor_license_exec = HupaApiEditorLicenseExecAPI::instance();
 
 
-        /** Register Admin License API WP-Remote
-         * @since    1.0.0
-         */
-        $this->remote = HupaApiPluginApiEditorServerHandle::init();
-        global $hupaApiEditorSrv;
-        $hupaApiEditorSrv = $this->remote;
-
-        /** Register Admin License API WP-Remote Functions
+        /** Register License API WP-REMOTE CLASS
          * @since    1.0.0
          */
 
-        $this->loader->add_filter('get_hupa_api_editor_api_urls', $this->remote, 'HupaApiEditorGetApiUrl');
-        //TODO JOB POST Resources Endpoints
-        $this->loader->add_filter('hupa_api_editor_scope_resource', $this->remote, 'hupaApiEditorPOSTApiResource', 10, 2);
-        $this->loader->add_filter('hupa_api_scope_resource', $this->remote, 'hupaApiEditorServerPOSTApiResource', 10, 2);
-        //TODO JOB GET Resources Endpoints
-        $this->loader->add_filter('get_scope_resource', $this->remote, 'HupaApiEditorGETApiResource', 10, 2);
-        //TODO JOB VALIDATE SOURCE BY Authorization Code
-        $this->loader->add_filter('get_hupa_api_editor_resource_authorization_code', $this->remote, 'HupaApiEditorInstallByAuthorizationCode');
-        //TODO JOB SERVER URL ÄNDERN FALLS NÖTIG
-        $this->loader->add_filter('hupa_api_editor_update_server_url', $this->remote, 'HupaApiEditorUpdateServerUrl');
+        global $hupa_api_editor_license_wp_remote;
+        $hupa_api_editor_license_wp_remote = HupaApiPluginApiEditorServerHandle::instance();
+        $this->remote = $hupa_api_editor_license_wp_remote;
+
+        $this->loader->add_action('plugin_loaded', $this->remote, 'wp_loaded_api_editor_remote');
+
     }
 
     /**
@@ -296,7 +290,7 @@ class Hupa_Api_Editor
         /** Register Plugin Settings Menu
          * @since    1.0.0
          */
-        $this->loader->add_filter( 'plugin_action_links_' . HUPA_API_EDITOR_SLUG_PATH, $this->admin, 'api_editor_plugin_add_action_link' );
+        $this->loader->add_filter('plugin_action_links_' . HUPA_API_EDITOR_SLUG_PATH, $this->admin, 'api_editor_plugin_add_action_link');
 
         /** Register Ajax Prefix ADMIN Action
          * @since    1.0.0
@@ -333,7 +327,8 @@ class Hupa_Api_Editor
      * @since    1.0.0
      * @access   private
      */
-    private function maybe_self_deactivate():void {
+    private function maybe_self_deactivate(): void
+    {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
         deactivate_plugins(HUPA_API_EDITOR_SLUG_PATH);
         add_action('admin_notices', array($this, 'self_deactivate_notice'));
@@ -346,7 +341,8 @@ class Hupa_Api_Editor
      * @since    1.0.0
      * @access   public
      */
-    #[NoReturn] public function self_deactivate_notice():void {
+    #[NoReturn] public function self_deactivate_notice(): void
+    {
         echo sprintf('<div class="error" style="margin-top:5rem"><p>' . __('This plugin has been disabled because it requires a PHP version greater than %s and a WordPress version greater than %s. Your PHP version can be updated by your hosting provider.', 'hupa-api-editor') . '</p></div>', HUPA_API_EDITOR_MIN_PHP_VERSION, HUPA_API_EDITOR_MIN_WP_VERSION);
         exit();
     }

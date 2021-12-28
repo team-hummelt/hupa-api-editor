@@ -2,7 +2,7 @@
 defined( 'ABSPATH' ) or die();
 /**
  * ADMIN AJAX
- * @package Hummelt & Partner WordPress Theme
+ * @package Hummelt & Partner HUPA Minify
  * Copyright 2021, Jens Wiecker
  * License: Commercial - goto https://www.hummelt-werbeagentur.de/
  */
@@ -18,20 +18,19 @@ switch ($method) {
         $client_id = filter_input( INPUT_POST, 'client_id', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH );
         $client_secret = filter_input( INPUT_POST, 'client_secret', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH );
 
-
         if(strlen($client_id) !== 12 || strlen($client_secret) !== 36) {
             $responseJson->status        = false;
             $responseJson->msg = 'Client ID oder Client secret sind nicht bekannt!';
             return;
         }
 
-
         if(get_option('hupa_api_editor_product_install_authorize')) {
             $responseJson->status = true;
             $responseJson->if_authorize = true;
             return;
         }
-        update_option('hupa_api_editor_license_url', site_url());
+
+	    update_option('hupa_api_editor_license_url', site_url());
         if(!get_option('hupa_server_url')){
             update_option('hupa_server_url','https://start.hu-ku.com/theme-update/api/v2/');
         }

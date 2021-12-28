@@ -12,12 +12,12 @@ if (sendLicense) {
 function send_xhr_license_data(data) {
     let xhr = new XMLHttpRequest();
     let formData = new FormData();
-    xhr.open('POST', bs_formulare_license_obj.ajax_url, true);
+    xhr.open('POST', hupa_api_editor_license_obj.ajax_url, true);
     let input = new FormData(data);
     for (let [name, value] of input) formData.append(name, value);
 
-    formData.append('_ajax_nonce', bs_formulare_license_obj.nonce);
-    formData.append('action', 'BsFormularLicenceHandle');
+    formData.append('_ajax_nonce', hupa_api_editor_license_obj.nonce);
+    formData.append('action', 'HupaApiEditorLicenceHandle');
     xhr.send(formData);
     //Response
     xhr.onload = function () {

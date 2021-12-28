@@ -106,6 +106,17 @@ if ( is_admin() ) {
     }
 }
 
+
+function showWPHupaApiEditorInfo() {
+    if ( get_transient( 'show_api_editor_lizenz_info' ) ) {
+        echo '<div class="error"><p>' .
+            'Hupa Api Editor ungültige Lizenz: Zum Aktivieren geben Sie Ihre Zugangsdaten ein.' .
+            '</p></div>';
+    }
+}
+
+add_action( 'admin_notices', 'showWPHupaApiEditorInfo' );
+
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.

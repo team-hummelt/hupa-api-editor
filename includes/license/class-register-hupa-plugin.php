@@ -1,89 +1,43 @@
 <?php
 
-namespace Hupa\EditorLicense;
+namespace Hupa\RegisterApiEditorLicense;
 
 defined('ABSPATH') or die();
 
 /**
- * REGISTER HUPA CUSTOM THEME
- * @package Hummelt & Partner WordPress Theme
+ * REGISTER HUPA API Editor
+ * @package Hummelt & Partner WordPress-Plugin
  * Copyright 2021, Jens Wiecker
  * License: Commercial - goto https://www.hummelt-werbeagentur.de/
  */
 final class RegisterHupaApiEditor
 {
-    /**
-     * The Instance of this plugin.
-     *
-     * @since    1.0.0
-     */
     private static $instance;
 
-    /**
-     * The ID of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string    $plugin_name    The ID of this plugin.
-     */
-    private string $plugin_name;
-
-    /**
-     * The version of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string    $version    The current version of this plugin.
-     */
-    private string $version;
-
-    /**
-     * Store plugin main class to allow public access.
-     *
-     * @since    1.0.0
-     * @var object      The main class.
-     */
-    public $main;
-
-
-    /**
-     * Initialize the class and set its properties.
-     *
-     * @since    1.0.0
-     * @param    string     $plugin_name    The name of this plugin.
-     * @param    string     $version        The version of this plugin.
-     */
 
     /**
      * @return static
      */
-    public static function instance(string $plugin_name, string $version, $plugin_main): self
+    public static function instance(): self
     {
         if (is_null(self::$instance)) {
-            self::$instance = new self($plugin_name, $version, $plugin_main);
+            self::$instance = new self();
         }
         return self::$instance;
     }
 
-    public function __construct(string $plugin_name, string $version, $plugin_main){
-
-        $this->plugin_name = $plugin_name;
-        $this->version = $version;
-        $this->main = $plugin_main;
-
-    }
+    public function __construct(){}
 
     /**
-     * =================================================
-     * =========== REGISTER THEME ADMIN MENU ===========
-     * =================================================
+     * ==================================================
+     * =========== REGISTER PLUGIN ADMIN MENU ===========
+     * ==================================================
      */
-
     public function register_license_hupa_api_editor_plugin(): void
     {
         $hook_suffix = add_menu_page(
-            __('API Editor v' .$this->version, 'hupa-api-editor'),
-            __('API Editor v'.$this->version, 'hupa-api-editor'),
+            __('Editor-API', 'hupa-api-editor'),
+            __('Editor-API', 'hupa-api-editor'),
             'manage_options',
             'hupa-api-editor-license',
             array($this, 'hupa_api_editor_license'),
@@ -98,7 +52,6 @@ final class RegisterHupaApiEditor
         require 'activate-hupa-api-editor-page.php';
     }
 
-
     /**
      * =========================================
      * =========== ADMIN AJAX HANDLE ===========
@@ -109,9 +62,9 @@ final class RegisterHupaApiEditor
     {
         add_action('admin_enqueue_scripts', array($this, 'load_hupa_api_editor_admin_style'));
         $title_nonce = wp_create_nonce('hupa_api_editor_license_handle');
-        wp_register_script('hupa-api-editor-license-ajax-script', '', [], '', true);
-        wp_enqueue_script('hupa-api-editor-license-ajax-script');
-        wp_localize_script('hupa-api-editor-license-ajax-script', 'hup_api_editor_license_obj', array(
+        wp_register_script('hupa-api-editor-ajax-script', '', [], '', true);
+        wp_enqueue_script('hupa-api-editor-ajax-script');
+        wp_localize_script('hupa-api-editor-ajax-script', 'hupa_api_editor_license_obj', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => $title_nonce
         ));
@@ -123,10 +76,10 @@ final class RegisterHupaApiEditor
      * ==================================================
      */
 
-    public function ApiEditorLicenceHandle(): void {
+    public function prefix_ajax_HupaApiEditorLicenceHandle(): void {
         $responseJson = null;
         check_ajax_referer( 'hupa_api_editor_license_handle' );
-        require 'hupa-api-editor-license-ajax.php';
+        require 'hupa-license-ajax.php';
         wp_send_json( $responseJson );
     }
 
@@ -154,8 +107,12 @@ final class RegisterHupaApiEditor
 
     public function load_hupa_api_editor_admin_style(): void
     {
-        wp_enqueue_style('api-editor-license-style',plugins_url(HUPA_API_EDITOR_BASENAME) . '/includes/license/assets/license-backend.css', array(),$this->version);
-        wp_enqueue_script('api-editor-formular-license', plugins_url(HUPA_API_EDITOR_BASENAME) . '/includes/license/license-script.js', array(), $this->version, true );
+        wp_enqueue_style('hupa-api-editor-license-style',plugins_url('hupa-minify') . '/inc/license/assets/license-backend.css', array(), '');
+        wp_enqueue_script('js-hupa-api-editor-license', plugins_url('hupa-minify') . '/inc/license/license-script.js', array(), '', true );
     }
 }
 
+/*$register_hupa_minify = RegisterHupaMinify::hupa_minify_instance();
+if (!empty($register_hupa_minify)) {
+	$register_hupa_minify->init_hupa_minify();
+}*/

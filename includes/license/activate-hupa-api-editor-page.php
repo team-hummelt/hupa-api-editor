@@ -1,8 +1,8 @@
 <?php
 defined('ABSPATH') or die();
 /**
- * ADMIN HOME SITE
- * @package Hummelt & Partner WordPress Theme
+ * ADMIN HUPA API EDITOR
+ * @package Hummelt & Partner WordPress HUPA API EDITOR
  * Copyright 2021, Jens Wiecker
  * License: Commercial - goto https://www.hummelt-werbeagentur.de/
  */
@@ -35,7 +35,7 @@ $reloadUrl=admin_url();
     <div class="container">
         <div class="card card-license">
             <div class="card-body shadow-license-box">
-                <h5 class="card-title"><i class="wp-blue bi bi-exclude"></i>&nbsp;Plugin HUPA API-Editor aktivieren </h5>
+                <h5 class="card-title"><i class="wp-blue bi bi-exclude"></i>&nbsp;Plugin HUPA API Editor aktivieren </h5>
                 <?php if(get_option('hupa_api_editor_message')): ?>
                 <p style="padding: 0 1rem; color: red;text-align: center"><i class="bi bi-exclamation-triangle-fill"></i>&nbsp;
                     <b><?=get_option('hupa_api_editor_message')?></b></p>
@@ -88,6 +88,7 @@ $reloadUrl=admin_url();
                                     id="licenseErrMsg"><?= $errMsg ?></span>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

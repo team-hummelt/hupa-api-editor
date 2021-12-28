@@ -1,6 +1,6 @@
 <?php
 
-namespace HupaEditorAPIExec\EXEC;
+namespace HupaApiEditorAPIExec\EXEC;
 
 defined('ABSPATH') or die();
 
@@ -21,7 +21,7 @@ if (!function_exists('is_user_logged_in')) {
  * Copyright 2021, Jens Wiecker
  * License: Commercial - goto https://www.hummelt-werbeagentur.de/
  */
-final class ApiEditorLicenseExecAPI
+final class HupaApiEditorLicenseExecAPI
 {
     private static $instance;
 
@@ -38,21 +38,20 @@ final class ApiEditorLicenseExecAPI
 
     public function __construct()
     {
-
         if (is_user_logged_in() && is_admin()) {
             if (site_url() !== get_option('hupa_api_editor_license_url')) {
-                $msg = 'Version: ' . HUPA_API_EDITOR_VERSION . ' ungültige Lizenz URL: ' . site_url();
+                $msg = 'Version: ' . HUPA_API_EDITOR_VERSION . ' ungültige Lizenz URL: ' . get_option('hupa_api_editor_license_url');
                 $this->apiSystemLog('url_error', $msg);
             }
 
-            if(!get_option('hupa_api_editor_license_url_server_api')){
-                $serverApi = [
-                    'update_aktiv' => true,
-                    'update_type' =>  1,
-                    'update_url' => 'https://github.com/team-hummelt/'. HUPA_API_EDITOR_BASENAME
-                ];
-                update_option('hupa_api_editor_server_api', $serverApi);
-            }
+	        if(!get_option('hupa_api_editor_server_api')){
+		        $serverApi = [
+			        'update_aktiv' => true,
+			        'update_type' =>  1,
+			        'update_url' => 'https://github.com/team-hummelt/'. HUPA_API_EDITOR_BASENAME
+		        ];
+		        update_option('hupa_api_editor_server_api', $serverApi);
+	        }
         }
     }
 
@@ -60,7 +59,7 @@ final class ApiEditorLicenseExecAPI
     {
         $return = new stdClass();
         $return->status = false;
-        $getJob = $this->load_post_make_exec_job($data);
+        $getJob = $this->load_api_editor_make_exec_job($data);
 
         if (!$getJob->status) {
             $return->msg = 'Exec Job konnte nicht ausgeführt werden!';
@@ -89,9 +88,7 @@ final class ApiEditorLicenseExecAPI
                     'type' => 'aktivierungs_file'
                 ];
 
-                $api = HupaApiPluginApiEditorServerHandle::init();
-
-
+                $api = HupaApiPluginApiEditorServerHandle::instance();
                 $datei = $api->HupaApiEditorApiDownloadFile(get_option('hupa_server_url').'download', $body);
                 if($datei){
                     $file = HUPA_API_EDITOR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;
@@ -121,16 +118,17 @@ final class ApiEditorLicenseExecAPI
                 delete_option('hupa_api_editor_client_secret');
                 delete_option('hupa_api_editor_license_url');
                 delete_option('hupa_api_editor_product_install_authorize');
-                update_option('hupa_api_editor_message', 'Das Plugin Hupa-Api-Editor wurde deaktiviert. Wenden Sie sich an den Administrator.');
-                $status = true;
-                $msg = 'Plugin erfolgreich deaktiviert.';
+                update_option('hupa_api_editor_message', 'Das Plugin HUPA API Editor wurde deaktiviert. Wenden Sie sich an den Administrator.');
+	            set_transient('show_api_editor_lizenz_info', true, 5);
+				$status = true;
+                $msg = 'Hupa-Api Editor erfolgreich deaktiviert.';
                 break;
             case '6':
                 $body = [
                     'version' => HUPA_API_EDITOR_VERSION,
                     'type' => 'aktivierungs_file'
                 ];
-                $api = HupaApiPluginApiEditorServerHandle::init();
+                $api = HupaApiPluginApiEditorServerHandle::instance();
                 $datei = $api->HupaApiEditorApiDownloadFile(get_option('hupa_server_url').'download', $body);
                 if($datei){
                     $file = HUPA_API_EDITOR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;
@@ -154,6 +152,7 @@ final class ApiEditorLicenseExecAPI
                 $status = true;
                 $msg = 'Aktivierungs File erfolgreich gelöscht.';
                 deactivate_plugins( HUPA_API_EDITOR_SLUG_PATH );
+	            set_transient('show_api_editor_lizenz_info', true, 5);
                 break;
             case '8':
                 update_option('hupa_server_url', $getJob->server_url);
@@ -165,38 +164,39 @@ final class ApiEditorLicenseExecAPI
                     'version' => HUPA_API_EDITOR_VERSION,
                     'type' => 'update_version'
                 ];
-                apply_filters('post_scope_resource', $getJob->uri, $body);
+
+                apply_filters('hupa_api_editor_scope_resource', $getJob->uri, $body);
                 $status = true;
                 $msg = 'Version aktualisiert.';
                 break;
-            case'10':
-                if($getJob->update_type == '1' || $getJob->update_type == '2'){
-                   $updateUrl =  apply_filters('hupa_api_editor_scope_resource', 'hupa-update/url');
-                   $url = $updateUrl->url;
-                   $update_aktiv = true;
-                } else {
-                    $update_aktiv = false;
-                    $url = '';
-                }
-                $serverApi = [
-                    'update_aktiv' => $update_aktiv,
-                    'update_type' => $getJob->update_type,
-                    'update_url' => $url
-                ];
+	        case'10':
+		        if($getJob->update_type == '1' || $getJob->update_type == '2'){
+			        $updateUrl =  apply_filters('hupa_api_editor_scope_resource', 'hupa-update/url');
+			        $url = $updateUrl->url;
+			        $update_aktiv = true;
+		        } else {
+			        $update_aktiv = false;
+			        $url = '';
+		        }
+		        $serverApi = [
+			        'update_aktiv' => $update_aktiv,
+			        'update_type' => $getJob->update_type,
+			        'update_url' => $url
+		        ];
 
-                update_option('hupa_api_editor_server_api', $serverApi);
-                $status = true;
-                $msg = 'Update Methode aktualisiert.';
-                break;
-            case'11':
-               $updateUrl = apply_filters('hupa_api_editor_scope_resource', 'hupa-update/url');
-               $updOption = get_option('hupa_api_editor_server_api');
-               $updOption['update_url'] = $updateUrl->url;
-               update_option('hupa_api_editor_server_api', $updOption);
+		        update_option('hupa_api_editor_server_api', $serverApi);
+		        $status = true;
+		        $msg = 'Update Methode aktualisiert.';
+		        break;
+	        case'11':
+		        $updateUrl = apply_filters('hupa_api_editor_scope_resource', 'hupa-update/url');
+		        $updOption = get_option('hupa_api_editor_server_api');
+		        $updOption['update_url'] = $updateUrl->url;
+		        update_option('hupa_api_editor_server_api', $updOption);
 
-                $status = true;
-                $msg = 'URL Token aktualisiert.';
-                break;
+		        $status = true;
+		        $msg = 'URL Token aktualisiert.';
+		        break;
             default:
                 $status = false;
                 $msg = 'keine Daten empfangen';
@@ -207,7 +207,7 @@ final class ApiEditorLicenseExecAPI
         return $return;
     }
 
-    protected function load_post_make_exec_job($data, $body = []): object
+    protected function load_api_editor_make_exec_job($data, $body = []): object
     {
         $bearerToken = $data->access_token;
         $args = [
@@ -251,18 +251,11 @@ final class ApiEditorLicenseExecAPI
             'message' => $message
         ];
 
-        $remoteApi = HupaApiPluginApiEditorServerHandle::init();
-        $sendErr = $remoteApi->hupaApiEditorServerPOSTApiResource('error-log', $body);
-    }
-
-    public function get_post_scope_data($scope, $body = []) {
-       $post = HupaApiPluginApiEditorServerHandle::init();
-
-      return $post->hupaApiEditorServerPOSTApiResource($scope, $body);
+        $remoteApi = HupaApiPluginApiEditorServerHandle::instance();
+        $sendErr = $remoteApi->HupaApiEditorPOSTApiResource('error-log', $body);
     }
 
 } //endClass
 
-global $hupa_api_editor_license_exec;
-$hupa_api_editor_license_exec = ApiEditorLicenseExecAPI::instance();
+
 
