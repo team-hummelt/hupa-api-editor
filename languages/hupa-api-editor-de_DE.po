@@ -1,0 +1,79 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2021-12-25 23:39+0100\n"
+"PO-Revision-Date: 2021-12-25 23:39+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;esc_html;esc_html__;esc_att;esc_attr__;"
+"esc_attr_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: admin/class-hupa-api-editor-admin.php:74
+#: admin/class-hupa-api-editor-admin.php:75
+msgid "API-Editor"
+msgstr "API-Editor"
+
+#: admin/class-hupa-api-editor-admin.php:84
+msgid "API-Editor - Settings"
+msgstr "API-Editor - Einstellungen"
+
+#: admin/class-hupa-api-editor-admin.php:85
+msgid "API-Editor Settings "
+msgstr "API-Editor Einstellungen "
+
+#: includes/class-hupa-api-editor.php:264
+#, php-format
+msgid ""
+"This plugin has been disabled because it requires a PHP version greater than "
+"%s and a WordPress version greater than %s. Your PHP version can be updated "
+"by your hosting provider."
+msgstr ""
+"Dieses Plugin wurde deaktiviert, weil es eine PHP-Version größer als %s und "
+"eine WordPress-Version größer als %s benötigt. Ihre PHP-Version kann von "
+"Ihrem Hosting-Anbieter aktualisiert werden."
+
+#: includes/license/activate-hupa-api-editor-page.php:66
+msgid "Client ID"
+msgstr "Client ID"
+
+#: includes/license/activate-hupa-api-editor-page.php:74
+msgid "Client secret"
+msgstr "Client secret"
+
+#: includes/license/register-hupa-plugin.php:53
+#: includes/license/register-hupa-plugin.php:54
+msgid "API Editor"
+msgstr "API-Editor"
+
+#: vendor/yahnis-elsts/plugin-update-checker/Puc/v4p11/Plugin/Ui.php:54
+msgid "View details"
+msgstr ""
+
+#: vendor/yahnis-elsts/plugin-update-checker/Puc/v4p11/Plugin/Ui.php:77
+#, php-format
+msgid "More information about %s"
+msgstr ""
+
+#: vendor/yahnis-elsts/plugin-update-checker/Puc/v4p11/Plugin/Ui.php:128
+msgid "Check for updates"
+msgstr ""
+
+#: vendor/yahnis-elsts/plugin-update-checker/Puc/v4p11/Plugin/Ui.php:224
+#, php-format
+msgid "Unknown update checker status \"%s\""
+msgstr ""
+
+#: vendor/yahnis-elsts/plugin-update-checker/Puc/v4p11/Vcs/PluginUpdateChecker.php:98
+msgid "There is no changelog available."
+msgstr ""
+
+#~ msgid "Contact"
+#~ msgstr "Kontakt"

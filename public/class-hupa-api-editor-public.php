@@ -40,6 +40,14 @@ class Hupa_Api_Editor_Public {
 	 */
 	private string $version;
 
+    /**
+     * Store plugin main class to allow public access.
+     *
+     * @since    1.0.0
+     * @var object      The main class.
+     */
+    public $main;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -47,12 +55,22 @@ class Hupa_Api_Editor_Public {
 	 * @param    string    $plugin_name The name of the plugin.
 	 * @param    string    $version     The version of this plugin.
 	 */
-	public function __construct(string $plugin_name, string $version ) {
+	public function __construct(string $plugin_name, string $version ,$plugin_main ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+        $this->main = $plugin_main;
 
 	}
+
+    /** Register Ajax Prefix PUBLIC Action
+     * @since    1.0.0
+     */
+    public function prefix_ajax_HupaApiEditorNoAdmin(): void {
+        $responseJson = null;
+        check_ajax_referer( 'hupa_api_editor_public_handle' );
+        wp_send_json( $responseJson );
+    }
 
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
@@ -96,8 +114,19 @@ class Hupa_Api_Editor_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/hupa-api-editor-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/hupa-api-editor-public.js', array( 'jquery' ), $this->version, true );
 
+        global $post;
+        $title_nonce = wp_create_nonce('hupa_api_editor_public_handle');
+        wp_register_script('api-editor-public-ajax-script', '', [], '', true);
+        wp_enqueue_script('api-editor-public-ajax-script');
+        wp_localize_script('api-editor-public-ajax-script', 'api_editor_ajax_obj', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => $title_nonce,
+            'post_id' => $post->ID,
+            'plugin_url' => HUPA_API_EDITOR_PLUGIN_URL,
+            'site_url' => site_url(),
+        ));
 	}
 
 }
