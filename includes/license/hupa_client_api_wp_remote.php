@@ -87,7 +87,7 @@ defined('ABSPATH') or die();
             }
 
             $apiData = json_decode($response['body']);
-            if ($apiData->error) {
+            if (isset($apiData->error)) {
                 $apiData->status = false;
                 return $apiData;
             }
@@ -120,7 +120,6 @@ defined('ABSPATH') or die();
 		        }
 	        }
 	        return false;
-
         }
 
         public function HupaApiEditorGETApiResource($scope, $get = []) {
@@ -144,7 +143,7 @@ defined('ABSPATH') or die();
             }
 
             $apiData = json_decode($response['body']);
-            if($apiData->error){
+            if(isset($apiData->error)){
                 $errType = $this->get_error_message($apiData);
                 if($errType) {
                     $this->HupaApiEditorGetApiClientCredentials();
@@ -156,15 +155,12 @@ defined('ABSPATH') or die();
                 $error->message = $response->get_error_message();
                 return $error;
             }
-            $apiData = json_decode($response['body']);
-            if(!$apiData->error){
+
+            if(is_array($response)) {
+                $apiData = json_decode($response['body']);
                 $apiData->status = true;
                 return $apiData;
             }
-
-            $error->error = $apiData->error;
-            $error->error_description = $apiData->error_description;
-            return $error;
         }
 
         public function HupaApiEditorApiPostArgs($body = []):array

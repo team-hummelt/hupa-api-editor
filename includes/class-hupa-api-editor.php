@@ -190,7 +190,9 @@ class Hupa_Api_Editor
         /**
          * The class responsible for defining all actions that occur in the admin area.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-hupa-api-editor-admin.php';
+        if(get_option('hupa_api_editor_product_install_authorize')){
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-hupa-api-editor-admin.php';
+        }
 
         /**
          * The class responsible for defining all actions that occur in the public-facing
@@ -243,7 +245,7 @@ class Hupa_Api_Editor
          */
 
         // TODO REGISTER LICENSE MENU
-        if (!get_option('hupa_api_editor_install_authorize')) {
+        if (!get_option('hupa_api_editor_product_install_authorize')) {
             $this->loader->add_action('admin_menu', $this->license, 'register_license_hupa_api_editor_plugin');
         }
 

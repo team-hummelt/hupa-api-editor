@@ -107,12 +107,7 @@ final class RegisterHupaApiEditor
 
     public function load_hupa_api_editor_admin_style(): void
     {
-        wp_enqueue_style('hupa-api-editor-license-style',plugins_url('hupa-minify') . '/inc/license/assets/license-backend.css', array(), '');
-        wp_enqueue_script('js-hupa-api-editor-license', plugins_url('hupa-minify') . '/inc/license/license-script.js', array(), '', true );
+        wp_enqueue_style('hupa-api-editor-license-style',plugins_url('hupa-api-editor') . '/includes/license/assets/license-backend.css', array(), '');
+        wp_enqueue_script('js-hupa-api-editor-license', plugins_url('hupa-api-editor') . '/includes/license/license-script.js', array(), '', true );
     }
 }
-
-/*$register_hupa_minify = RegisterHupaMinify::hupa_minify_instance();
-if (!empty($register_hupa_minify)) {
-	$register_hupa_minify->init_hupa_minify();
-}*/
