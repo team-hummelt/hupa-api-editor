@@ -1,23 +1,4 @@
 <?php
-
-/**
- * The file that defines the core plugin class
- *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
- * @link       http://jenswiecker.de
- * @since      1.0.0
- *
- * @package    Hupa_Api_Editor
- * @subpackage Hupa_Api_Editor/includes
- */
-
-use JetBrains\PhpStorm\NoReturn;
-use Hupa\RegisterApiEditorLicense\RegisterHupaApiEditor;
-use HupaApiEditorAPIExec\EXEC\HupaApiEditorLicenseExecAPI;
-use Hupa\ApiEditorPluginLicense\HupaApiPluginApiEditorServerHandle;
-
 /**
  * The core plugin class.
  *
@@ -32,6 +13,14 @@ use Hupa\ApiEditorPluginLicense\HupaApiPluginApiEditorServerHandle;
  * @subpackage Hupa_Api_Editor/includes
  * @author     Jens Wiecker <email@jenswiecker.de>
  */
+
+use JetBrains\PhpStorm\NoReturn;
+use Hupa\RegisterApiEditorLicense\RegisterHupaApiEditor;
+use HupaApiEditorAPIExec\EXEC\HupaApiEditorLicenseExecAPI;
+use Hupa\ApiEditorPluginLicense\HupaApiPluginApiEditorServerHandle;
+use Hupa\ApiEditorDatabase\Hupa_Api_Editor_Database;
+
+
 class Hupa_Api_Editor
 {
 
@@ -67,7 +56,7 @@ class Hupa_Api_Editor
      * Store plugin admin class to allow public access.
      *
      * @since    1.0.0
-     * @var object      The admin class.
+     * @var object The admin class.
      */
     public $admin;
 
@@ -75,7 +64,7 @@ class Hupa_Api_Editor
      * Store plugin public class to allow public access.
      *
      * @since    1.0.0
-     * @var object      The public class.
+     * @var object The public class.
      */
     public $public;
 
@@ -86,7 +75,6 @@ class Hupa_Api_Editor
      * @var object      The main class.
      */
     public $main;
-
 
     /**
      * Activate Plugin License.
@@ -105,6 +93,24 @@ class Hupa_Api_Editor
     public $remote;
 
     /**
+     * Plugin DATABASE.
+     *
+     * @since    1.0.0
+     * @var object      The Database class.
+     */
+    public $database;
+
+    /**
+     * The current version of the DB-Version.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string $db_version The current version of the database Version.
+     */
+    protected $db_version;
+
+
+    /**
      * Define the core functionality of the plugin.
      *
      * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -121,19 +127,32 @@ class Hupa_Api_Editor
         } else {
             $this->version = '1.0.0';
         }
-        $this->plugin_name = 'hupa-api-editor';
 
+        if (defined('HUPA_API_EDITOR_DB_VERSION')) {
+            $this->db_version = HUPA_API_EDITOR_DB_VERSION;
+        } else {
+            $this->db_version = '1.0.0';
+        }
+
+        $this->plugin_name = 'hupa-api-editor';
         $this->main = $this;
 
+        //Check PHP AND WordPress Version
         $this->check_dependencies();
+        // Require dependencies
         $this->load_dependencies();
+        //Set Locale "hupa-api-editor"
         $this->set_locale();
+        // Register License and Import Data from Server
         $this->register_hupa_api_edit_license();
+        // Set Settings Default-Optionen
+        $this->set_editable_options();
+        // Create OR Update Database
+        $this->hupa_api_editor_update_database();
         if (get_option('hupa_api_editor_product_install_authorize')) {
             $this->define_admin_hooks();
+            $this->define_public_hooks();
         }
-        $this->define_public_hooks();
-
     }
 
     /**
@@ -157,7 +176,6 @@ class Hupa_Api_Editor
      */
     private function load_dependencies()
     {
-
         /**
          * The class, Registers and activates the
          * core plugin.
@@ -186,11 +204,29 @@ class Hupa_Api_Editor
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-hupa-api-editor-i18n.php';
 
+        /**
+         * The Trait of Default Settings
+         * of the plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/Hupa_Api_Editor_Settings.php';
+
+        /**
+         * The class that is responsible for the database
+         * of the plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-hupa-api-editor-database.php';
+
+        /**
+         * The class responsible for the options of the Editable JS
+         * of the plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class_hupa_editable_options.php';
+
 
         /**
          * The class responsible for defining all actions that occur in the admin area.
          */
-        if(get_option('hupa_api_editor_product_install_authorize')){
+        if (get_option('hupa_api_editor_product_install_authorize')) {
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-hupa-api-editor-admin.php';
         }
 
@@ -199,16 +235,6 @@ class Hupa_Api_Editor
          * side of the site.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-hupa-api-editor-public.php';
-
-        /**
-         * The class responsible for defining all actions for ADMIN AJAX
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-hupa-api-editor-ajax.php';
-
-        /**
-         * The class responsible for defining all actions for PUBLIC AJAX
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-hupa-api-editor-ajax.php';
 
         $this->loader = new Hupa_Api_Editor_Loader();
 
@@ -230,6 +256,89 @@ class Hupa_Api_Editor
     }
 
     /**
+     * Database entries for the data types of EditableJS
+     *
+     * Uses the class Hupa_Api_Editor_Database to create and edit the database.
+     * register with WordPress.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function hupa_api_editor_update_database()
+    {
+        global $hupaApiEditorDatabase;
+        $this->database = new Hupa_Api_Editor_Database($this->db_version);
+        $hupaApiEditorDatabase = $this->database;
+
+        /**
+         * Create Table-Editor Section
+         * @since    1.0.0
+         */
+        $this->loader->add_action('init', $this->database, 'update_api_editor_database');
+
+        /**
+         * GET Table-Editor Section
+         * @since    1.0.0
+         */
+        $this->loader->add_filter('get_api_editor_table_editor', $this->database, 'get_hupa_api_editor_sections',10, 2);
+
+        /**
+         * SET Table-Editor Section
+         * @since    1.0.0
+         */
+        $this->loader->add_filter('set_api_editor_table_editor', $this->database, 'hupa_api_editor_set_table_editor');
+
+        /**
+         * Update Table-Editor Section
+         * @since    1.0.0
+         */
+        $this->loader->add_action('update_api_editor_table_editor', $this->database, 'hupa_api_editor_update_table_editor');
+
+        /**
+         * Delete Table-Editor Section
+         * @since    1.0.0
+         */
+        $this->loader->add_action('delete_api_editor_table_editor', $this->database, 'hupa_api_editor_delete_table_editor');
+
+        /**
+         * Set Default Settings
+         * @since    1.0.0
+         */
+        $this->loader->add_action('set_api_editor_default_optionen', $this->database, 'hupa_api_set_default_settings');
+
+
+        /**
+         * GET Optionen Settings
+         * @since    1.0.0
+         */
+        $this->loader->add_filter('get_hupa_api_settings', $this->database, 'hupa_get_api_settings');
+
+
+        /**
+         * RESET ALL Optionen Settings
+         * @since    1.0.0
+         */
+        $this->loader->add_filter('set_hupa_api_defaults', $this->database, 'hupa_api_editor_reset_settings');
+    }
+
+
+    /**
+     * Basic settings Options for Editable JS
+     *
+     * Uses the Hupa_Editable_Options class to register the options and hook.
+     * register with WordPress.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function set_editable_options()
+    {
+        global $editableOption;
+        $editableOption = Hupa_Editable_Options::instance();
+
+    }
+
+    /**
      * Validate Hupa Api Edit License.
      *
      * Uses the class RegisterHupaApiEditor to register the licence for the plugin
@@ -244,7 +353,7 @@ class Hupa_Api_Editor
          * @since    1.0.0
          */
 
-        // TODO REGISTER LICENSE MENU
+        // JOB REGISTER LICENSE MENU
         if (!get_option('hupa_api_editor_product_install_authorize')) {
             $this->loader->add_action('admin_menu', $this->license, 'register_license_hupa_api_editor_plugin');
         }
@@ -263,7 +372,6 @@ class Hupa_Api_Editor
         /** Register License API WP-REMOTE CLASS
          * @since    1.0.0
          */
-
         global $hupa_api_editor_license_wp_remote;
         $hupa_api_editor_license_wp_remote = HupaApiPluginApiEditorServerHandle::instance();
         $this->remote = $hupa_api_editor_license_wp_remote;
@@ -361,12 +469,12 @@ class Hupa_Api_Editor
 
         $this->public = new Hupa_Api_Editor_Public($this->get_plugin_name(), $this->get_version(), $this->main);
 
-        /** Register Ajax Prefix PUBLIC Action
+        /**
+         * Register Ajax Prefix PUBLIC Action
          * @since    1.0.0
          */
         $this->loader->add_action('wp_ajax_nopriv_HupaApiEditorNoAdmin', $this->public, 'prefix_ajax_HupaApiEditorNoAdmin');
         $this->loader->add_action('wp_ajax_HupaApiEditorNoAdmin', $this->public, 'prefix_ajax_HupaApiEditorNoAdmin');
-
 
         $this->loader->add_action('wp_enqueue_scripts', $this->public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $this->public, 'enqueue_scripts');
@@ -380,6 +488,14 @@ class Hupa_Api_Editor
     public function run()
     {
         $this->loader->run();
+    }
+
+    public function get_license_activate(): bool
+    {
+        if (get_option('hupa_api_editor_product_install_authorize')) {
+            return true;
+        }
+        return false;
     }
 
     /**

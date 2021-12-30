@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2021-12-25 23:39+0100\n"
-"PO-Revision-Date: 2021-12-25 23:39+0100\n"
+"POT-Creation-Date: 2021-12-30 14:49+0100\n"
+"PO-Revision-Date: 2021-12-30 14:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -16,20 +16,144 @@ msgstr ""
 "esc_attr_e\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/class-hupa-api-editor-admin.php:74
-#: admin/class-hupa-api-editor-admin.php:75
+#: admin/class-hupa-api-editor-admin.php:97
+#: admin/class-hupa-api-editor-admin.php:98
 msgid "API-Editor"
 msgstr "API-Editor"
 
-#: admin/class-hupa-api-editor-admin.php:84
-msgid "API-Editor - Settings"
-msgstr "API-Editor - Einstellungen"
+#: admin/class-hupa-api-editor-admin.php:130
+#: admin/partials/hupa-api-editor-options.php:47
+#: admin/partials/hupa-api-editor-options.php:53
+#: admin/partials/hupa-api-editor-options.php:159
+#: admin/partials/hupa-api-editor-options.php:165
+#: admin/partials/hupa-api-editor-options.php:223
+#: admin/partials/hupa-api-editor-options.php:284
+#: admin/partials/hupa-api-editor-startseite.php:22
+#: admin/partials/hupa-api-editor-startseite.php:27
+#: admin/partials/hupa-api-editor-startseite.php:33
+msgid "Settings"
+msgstr "Einstellungen"
 
-#: admin/class-hupa-api-editor-admin.php:85
-msgid "API-Editor Settings "
-msgstr "API-Editor Einstellungen "
+#: admin/class-hupa-api-editor-ajax.php:199
+msgid "All settings reset!"
+msgstr "Alle Einstellungen zurückgesetzt!"
 
-#: includes/class-hupa-api-editor.php:264
+#: admin/partials/hupa-api-editor-options.php:21
+#: admin/partials/hupa-api-editor-options.php:25
+#: admin/partials/hupa-api-editor-startseite.php:17
+#: admin/partials/hupa-api-editor-startseite.php:21
+msgid "API Editor"
+msgstr "API-Editor"
+
+#: admin/partials/hupa-api-editor-options.php:26
+#: admin/partials/hupa-api-editor-options.php:31
+#: admin/partials/hupa-api-editor-options.php:37
+msgid "CSS Sections"
+msgstr "CSS Sektionen"
+
+#: admin/partials/hupa-api-editor-options.php:39
+#: admin/partials/hupa-api-editor-options.php:45
+msgid "Visibility"
+msgstr "Sichtbarkeit"
+
+#: admin/partials/hupa-api-editor-options.php:56
+#: admin/partials/hupa-api-editor-options.php:62
+#: admin/partials/hupa-api-editor-options.php:320
+msgid "Reset"
+msgstr ""
+
+#: admin/partials/hupa-api-editor-options.php:76
+msgid "Add | Remove CSS Sections"
+msgstr "CSS Sektionen hinzufügen | entfernen"
+
+#: admin/partials/hupa-api-editor-options.php:81
+msgid "Add new section"
+msgstr "neue Sektion hinzufügen"
+
+#: admin/partials/hupa-api-editor-options.php:98
+msgid "Posts | Edit pages"
+msgstr "Beiträge | Seiten bearbeiten"
+
+#: admin/partials/hupa-api-editor-options.php:126
+msgid "show"
+msgstr "anzeigen"
+
+#: admin/partials/hupa-api-editor-options.php:127
+msgid "hide"
+msgstr "ausblenden"
+
+#: admin/partials/hupa-api-editor-options.php:133
+msgid "Minimum requirement for using this function"
+msgstr "Mindestvoraussetzung für die Verwendung dieser Funktion"
+
+#: admin/partials/hupa-api-editor-options.php:137
+msgid "User Role"
+msgstr "Benutzer Rolle"
+
+#: admin/partials/hupa-api-editor-options.php:140
+msgid "Subscriber"
+msgstr "Abonnent"
+
+#: admin/partials/hupa-api-editor-options.php:141
+msgid "Contributor"
+msgstr "Mitarbeiter"
+
+#: admin/partials/hupa-api-editor-options.php:142
+msgid "Author"
+msgstr "Autor"
+
+#: admin/partials/hupa-api-editor-options.php:143
+msgid "Editor"
+msgstr "Redakteur"
+
+#: admin/partials/hupa-api-editor-options.php:144
+msgid "Administrator"
+msgstr "Administrator"
+
+#: admin/partials/hupa-api-editor-options.php:165
+#: includes/class_hupa_editable_options.php:98
+msgid "Textarea"
+msgstr "Textarea"
+
+#: admin/partials/hupa-api-editor-options.php:203
+#: admin/partials/hupa-api-editor-options.php:264
+msgid "Show Button"
+msgstr ""
+
+#: admin/partials/hupa-api-editor-options.php:211
+#: admin/partials/hupa-api-editor-options.php:271
+#: admin/partials/hupa-api-editor-options.php:307
+msgid "Symbol anzeigen"
+msgstr ""
+
+#: admin/partials/hupa-api-editor-options.php:217
+#: admin/partials/hupa-api-editor-options.php:278
+msgid "Label anzeigen"
+msgstr ""
+
+#: admin/partials/hupa-api-editor-options.php:223
+msgid "Text, Number, Date, Select, E-Mail, Url"
+msgstr ""
+
+#: admin/partials/hupa-api-editor-options.php:284
+msgid "Inline"
+msgstr ""
+
+#: admin/partials/hupa-api-editor-options.php:325
+#: admin/partials/hupa-api-editor-options.php:329
+msgid "Reset all settings"
+msgstr "Alle Einstellungen zurücksetzen"
+
+#: admin/partials/hupa-api-editor-options.php:364
+#: includes/class_hupa_editable_options.php:70
+msgid "cancel"
+msgstr "Abbrechen"
+
+#: admin/partials/hupa-api-editor-options.php:367
+msgid "execute"
+msgstr "ausführen"
+
+#: includes/class-hupa-api-editor.php:456
 #, php-format
 msgid ""
 "This plugin has been disabled because it requires a PHP version greater than "
@@ -40,17 +164,105 @@ msgstr ""
 "eine WordPress-Version größer als %s benötigt. Ihre PHP-Version kann von "
 "Ihrem Hosting-Anbieter aktualisiert werden."
 
-#: includes/license/activate-hupa-api-editor-page.php:66
+#: includes/class_hupa_editable_options.php:69
+msgid "save"
+msgstr "Speichern"
+
+#: includes/class_hupa_editable_options.php:71
+msgid "Click to edit"
+msgstr "Klicken Sie zum Bearbeiten"
+
+#: includes/class_hupa_editable_options.php:72
+msgid "Edit text"
+msgstr "Text bearbeiten"
+
+#: includes/class_hupa_editable_options.php:73
+msgid "Edit title"
+msgstr "Titel bearbeiten"
+
+#: includes/class_hupa_editable_options.php:74
+msgid "Saving"
+msgstr "Speichern"
+
+#: includes/class_hupa_editable_options.php:90
+msgid "Input Type"
+msgstr "Input Type"
+
+#: includes/class_hupa_editable_options.php:94
+msgid "Text"
+msgstr "Text"
+
+#: includes/class_hupa_editable_options.php:102
+msgid "Number"
+msgstr "Nummer"
+
+#: includes/class_hupa_editable_options.php:106
+msgid "Date"
+msgstr "Datum"
+
+#: includes/class_hupa_editable_options.php:110
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: includes/class_hupa_editable_options.php:114
+msgid "URL"
+msgstr "URL"
+
+#: includes/class_hupa_editable_options.php:118
+msgid "Inline Element"
+msgstr "Inline Element"
+
+#: includes/class_hupa_editable_options.php:136
+msgid "active"
+msgstr "aktiv"
+
+#: includes/class_hupa_editable_options.php:137
+msgid "Posts"
+msgstr "Beiträge"
+
+#: includes/class_hupa_editable_options.php:138
+msgid "Name"
+msgstr "Bezeichnung"
+
+#: includes/class_hupa_editable_options.php:139
+msgid "Pages"
+msgstr "Seiten:"
+
+#: includes/class_hupa_editable_options.php:140
+msgid "CSS Section, Class, Element etc..."
+msgstr "CSS Section, Class, Element usw..."
+
+#: includes/class_hupa_editable_options.php:141
+msgid "add"
+msgstr "hinzufügen"
+
+#: includes/class_hupa_editable_options.php:142
+msgid "edit"
+msgstr "bearbeiten"
+
+#: includes/class_hupa_editable_options.php:143
+msgid "Save changes"
+msgstr "Änderungen speichern"
+
+#: includes/class_hupa_editable_options.php:144
+msgid "delete"
+msgstr "löschen"
+
+#: includes/license/activate-hupa-api-editor-page.php:65
 msgid "Client ID"
 msgstr "Client ID"
 
-#: includes/license/activate-hupa-api-editor-page.php:74
-msgid "Client secret"
+#: includes/license/activate-hupa-api-editor-page.php:73
+#, fuzzy
+#| msgid "Client secret"
+msgid "Client Secret"
 msgstr "Client secret"
 
-#: includes/license/register-hupa-plugin.php:53
-#: includes/license/register-hupa-plugin.php:54
-msgid "API Editor"
+#: includes/license/class-register-hupa-plugin.php:39
+#: includes/license/class-register-hupa-plugin.php:40
+#, fuzzy
+#| msgid "API-Editor"
+msgid "Editor-API"
 msgstr "API-Editor"
 
 #: vendor/yahnis-elsts/plugin-update-checker/Puc/v4p11/Plugin/Ui.php:54
@@ -74,6 +286,24 @@ msgstr ""
 #: vendor/yahnis-elsts/plugin-update-checker/Puc/v4p11/Vcs/PluginUpdateChecker.php:98
 msgid "There is no changelog available."
 msgstr ""
+
+#~ msgid "Show or Hide Editing for Existing Post Types"
+#~ msgstr "Editieren für vorhandene Post Types anzeigen oder ausblenden"
+
+#~ msgid "Edit active"
+#~ msgstr "Bearbeiten aktiv"
+
+#~ msgid "trash"
+#~ msgstr "löschen"
+
+#~ msgid "Sektionen"
+#~ msgstr "Sektionen"
+
+#~ msgid "API-Editor - Settings"
+#~ msgstr "API-Editor - Einstellungen"
+
+#~ msgid "API-Editor Settings "
+#~ msgstr "API-Editor Einstellungen "
 
 #~ msgid "Contact"
 #~ msgstr "Kontakt"

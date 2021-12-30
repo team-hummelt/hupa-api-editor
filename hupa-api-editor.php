@@ -29,10 +29,11 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-
 //PLUGIN VERSION
 $plugin_data = get_file_data(dirname(__FILE__) . '/hupa-api-editor.php', array('Version' => 'Version'), false);
 define("HUPA_API_EDITOR_VERSION", $plugin_data['Version']);
+//DATENBANK VERSION:
+const HUPA_API_EDITOR_DB_VERSION = '1.0.0';
 //DEFINE MIN PHP VERSION
 const HUPA_API_EDITOR_MIN_PHP_VERSION = '8.0';
 //DEFINE MIN WordPress VERSION

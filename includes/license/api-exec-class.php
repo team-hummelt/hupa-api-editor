@@ -113,7 +113,6 @@ final class HupaApiEditorLicenseExecAPI
                 break;
             case '5':
                 deactivate_plugins( HUPA_API_EDITOR_SLUG_PATH );
-                set_transient('show_lizenz_info', true, 5);
                 delete_option('hupa_api_editor_client_id');
                 delete_option('hupa_api_editor_client_secret');
                 delete_option('hupa_api_editor_license_url');

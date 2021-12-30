@@ -279,7 +279,9 @@ background-color: #fdfdfd!important;
     }
   }
 
-
+.text-success {
+  color:  #4aa261!important;
+}
   #socialSortable .form-check-input:checked {
     background-color: #8bc34a;
     border-color: #8ead69;
@@ -302,6 +304,16 @@ background-color: #fdfdfd!important;
     color: $hupa-color;
   }
 
+  .section_field{
+    padding: .75rem;
+    &.active {
+      background:#f9fff2;
+    }
+    &.deactivated {
+      background: #fff6f6;
+    }
+  }
+
   .sortableArrow {
     color: #6f6f6f;
     cursor: move;
@@ -312,6 +324,11 @@ background-color: #fdfdfd!important;
       color: $blue;
       transform: scale(1.2);
     }
+  }
+
+
+  .text-alert {
+    color: #DC3545FF!important;
   }
 
   .btn-trash-icon {
