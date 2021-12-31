@@ -47,6 +47,11 @@ body {
   font-weight: 500!important;
 }
 
+.inline-edit {
+  font-weight: 700!important;
+  cursor: pointer;
+}
+
 .api-edit-wrapper input[type=submit] {
   color: #F00!important;
   font-weight: bold!important;

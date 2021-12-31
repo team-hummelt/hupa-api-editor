@@ -1,15 +1,5 @@
 <?php
-
-/**
- * The admin-specific functionality of the plugin.
- *
- * @link       http://jenswiecker.de
- * @since      1.0.0
- *
- * @package    Hupa_Api_Editor
- * @subpackage Hupa_Api_Editor/admin
- */
-
+defined('ABSPATH') or die();
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -177,7 +167,7 @@ class Hupa_Api_Editor_Admin {
 		 * class.
 		 */
 
-        wp_enqueue_style('hupa-starter-admin-bs-style', plugin_dir_url( __FILE__ ) . 'css/bs/bootstrap.min.css', array(), $this->version, 'all');
+        wp_enqueue_style('hupa-api-editor-bs-style', plugin_dir_url( __FILE__ ) . 'css/bs/bootstrap.min.css', array(), $this->version, 'all');
         wp_enqueue_style('hupa-starter-admin-icons', plugin_dir_url( __FILE__ ) . 'css/font-awesome.css', array(), $this->version, 'all');
         wp_enqueue_style($this->plugin_name.'-bs5-data-tables', plugin_dir_url( __FILE__ ) . 'css/tools/dataTables.bootstrap5.min.css', array(), $this->version, 'all');
         wp_enqueue_style($this->plugin_name.'-admin-dashboard-style', plugin_dir_url( __FILE__ ) . 'css/admin-dashboard-style.css', array(), $this->version, 'all');

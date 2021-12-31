@@ -1,15 +1,5 @@
 <?php
-
-/**
- * Register all actions and filters for the plugin
- *
- * @link       http://jenswiecker.de
- * @since      1.0.0
- *
- * @package    Hupa_Api_Editor
- * @subpackage Hupa_Api_Editor/includes
- */
-
+defined('ABSPATH') or die();
 /**
  * Register all actions and filters for the plugin.
  *

@@ -22,10 +22,12 @@ switch ($method) {
         $capability = filter_input(INPUT_POST, 'capability', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
         isset($_POST['edit_aktiv']) && is_string($_POST['edit_aktiv']) ? $edit_api_aktiv = 1 : $edit_api_aktiv = 0;
 
+        $saveOptions = get_option('hupa_api_editable_options');
         $options = array(
             'show_editable_interfaces' => $show_editable_interfaces,
             'aktiv' => $edit_api_aktiv,
-            'capability' => sanitize_key($capability)
+            'capability' => sanitize_key($capability),
+            'show_option' => $saveOptions['show_option']
         );
 
         update_option('hupa_api_editable_options', $options);
@@ -47,21 +49,28 @@ switch ($method) {
                 $selected->btn_add = false;
                 $selected->btn_change = true;
                 $selected->btn_delete = true;
-                $sections = apply_filters('get_api_editor_table_editor', false);
+                $sections = apply_filters('get_api_editor_table_editor', 'ORDER BY e.created_at DESC');
                 if (!$sections->status) {
                     $responseJson->status = false;
                     $responseJson->msg = false;
                     return $responseJson;
                 }
+                global $editableOption;
                 foreach ($sections->record as $tmp) {
+
                     $sect_items = [
                         'id' => (int)$tmp->id,
-                        'css_class' => esc_html(trim($tmp->css_class)),
-                        'input_type' => esc_html(trim($tmp->input_type)),
+                        'css_selector' => esc_html(trim($tmp->css_selector)),
+                        'content_type' => esc_html(trim($tmp->content_type)),
+                        'output_type' => esc_html(trim($tmp->output_type)),
+                        'section_type' => esc_html(trim($tmp->section_type)),
                         'pages_aktiv' => (bool)$tmp->pages_aktiv == '1' && $selected->page === true,
                         'posts_aktiv' => (bool)$tmp->posts_aktiv == '1' && $selected->post === true,
                         'pages_disabled' => $selected->page === false,
                         'posts_disabled' => $selected->post === false,
+                        'section_select' => $editableOption->hupa_api_edit_input_select($tmp->content_type),
+                        'output_type_head' => $editableOption->hupa_api_edit_input_select('output_type', $tmp->output_type)->bezeichnung,
+                        'content_type_head' => $editableOption->hupa_api_edit_input_select('content_type', $tmp->content_type)->bezeichnung,
                     ];
                     $sectArr[] = $sect_items;
                 }
@@ -84,24 +93,44 @@ switch ($method) {
     case 'css_sections_db_handle':
         $type = filter_input(INPUT_POST, 'type', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
         $responseJson->rand = filter_input(INPUT_POST, 'rand', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
-        $select_type = filter_input(INPUT_POST, 'select_type', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+
         $css_selector = filter_input(INPUT_POST, 'css_selector', FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+
+        $content_type = filter_input(INPUT_POST, 'content_type', FILTER_SANITIZE_STRING);
+        $output_type = filter_input(INPUT_POST, 'output_type', FILTER_SANITIZE_STRING);
+        $section_type = filter_input(INPUT_POST, 'section_type', FILTER_SANITIZE_STRING);
 
         filter_input(INPUT_POST, 'page_aktiv', FILTER_SANITIZE_STRING) ? $record->pages_aktiv = 1 : $record->pages_aktiv = 0;
         filter_input(INPUT_POST, 'post_aktiv', FILTER_SANITIZE_STRING) ? $record->posts_aktiv = 1 : $record->posts_aktiv = 0;
 
-        if (!$select_type) {
-            $responseJson->msg = 'Fehler! Input Type nicht ausgewählt!';
+        if (!$content_type) {
+            $responseJson->msg = 'Fehler! Input Typ nicht ausgewählt!';
             return $responseJson;
         }
 
-        $record->input_type = $select_type;
+        if (!$output_type) {
+            $responseJson->msg = 'Fehler! Ausgabe Typ nicht ausgewählt!';
+            return $responseJson;
+        }
+
+        if (!$section_type) {
+            $responseJson->msg = 'Fehler! Sektion Post Typ nicht ausgewählt!';
+            return $responseJson;
+        }
+
+        $record->content_type = esc_html(trim($content_type));
+        $record->output_type = esc_html(trim($output_type));
+        $record->section_type = esc_html(trim($section_type));
+
+
+
         if (!$css_selector) {
             $responseJson->msg = 'Fehler! CSS-Selector darf nicht leer sein!';
             return $responseJson;
         }
+
         $responseJson->type = $type;
-        $record->css_class = $css_selector;
+        $record->css_selector = esc_html(trim($css_selector));
         switch ($type) {
             case 'insert':
                 $insert = apply_filters('set_api_editor_table_editor', $record);
@@ -111,6 +140,12 @@ switch ($method) {
                 break;
             case'update':
                 $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+                $args = sprintf('WHERE e.css_selector="%s" AND e.content_type="%s" AND e.id!=%d', $css_selector,$record->content_type,$id);
+                $getSelector = apply_filters('get_api_editor_table_editor', $args ,false);
+                if($getSelector->status) {
+                    $responseJson->msg = 'Fehler! CSS-Selector schon vorhanden!';
+                    return $responseJson;
+                }
                 if(!$id) {
                     $responseJson->msg = 'Ajax Übertragungsfehler!';
                     return $responseJson;
@@ -121,6 +156,11 @@ switch ($method) {
                 $responseJson->msg = 'Änderungen gespeichert';
                 break;
         }
+
+        global $editableOption;
+        $responseJson->output_type_head = $editableOption->hupa_api_edit_input_select('output_type', $record->output_type)->bezeichnung;
+        $responseJson->content_type_head = $editableOption->hupa_api_edit_input_select('content_type', $record->content_type)->bezeichnung;
+        $responseJson->css_selector = $record->css_selector;
         break;
 
     case 'delete_css_sections':
@@ -145,6 +185,7 @@ switch ($method) {
         filter_input(INPUT_POST, 'textarea_show_button', FILTER_SANITIZE_STRING) ? $textarea_show_button = 1 : $textarea_show_button = 0;
         filter_input(INPUT_POST, 'textarea_symbol', FILTER_SANITIZE_STRING) ? $textarea_symbol = 1 : $textarea_symbol = 0;
         filter_input(INPUT_POST, 'textarea_label', FILTER_SANITIZE_STRING) ? $textarea_label = 1 : $textarea_label = 0;
+        filter_input(INPUT_POST, 'textarea_auto_height', FILTER_SANITIZE_STRING) ? $textarea_auto_height = 1 : $textarea_auto_height = 0;
 
         $input_form_wrapper = filter_input(INPUT_POST, 'input_form_wrapper', FILTER_SANITIZE_STRING);
         $input_form_class = filter_input(INPUT_POST, 'input_form_class', FILTER_SANITIZE_STRING);
@@ -166,6 +207,7 @@ switch ($method) {
             'textarea_show_button' => $textarea_show_button,
             'textarea_symbol' => $textarea_symbol,
             'textarea_label' => $textarea_label,
+            'textarea_auto_height' => $textarea_auto_height,
 
             'input_form_wrapper' => esc_html(trim($input_form_wrapper)),
             'input_form_class' => esc_html(trim($input_form_class)),
@@ -174,15 +216,16 @@ switch ($method) {
             'input_show_button' => $input_show_button,
             'input_symbol' => $input_symbol,
             'input_label' => $input_label,
+            'input_auto_height' => 0,
 
             'inline_form_wrapper' => esc_html(trim($inline_form_wrapper)),
             'inline_form_class' => esc_html(trim($inline_form_class)),
             'inline_symbol' => $inline_symbol,
-
             'inline_submit_class' => '',
             'inline_cancel_class' => '',
             'inline_show_button' => 0,
-            'inline_label' => 0
+            'inline_label' => 0,
+            'inline_auto_height' => 0,
         ];
 
         global $editableOption;
@@ -198,5 +241,30 @@ switch ($method) {
           $responseJson->status = true;
           $responseJson->type = $method;
           $responseJson->msg = __('All settings reset!', 'hupa-api-editor');
+        break;
+    case'update_su_admin_options':
+        filter_input(INPUT_POST, 'show_option_page', FILTER_SANITIZE_STRING) ? $show_option_page = 1 : $show_option_page = 0;
+        $saveOptions = get_option('hupa_api_editable_options');
+
+        $saveOptions['show_option'] = $show_option_page;
+        update_option('hupa_api_editable_options', $saveOptions);
+        $responseJson->status = true;
+        $responseJson->type = 'admin_option';
+        $responseJson->option_page = (bool) $show_option_page == 1;
+        $responseJson->spinner = true;
+        $responseJson->msg = date('H:i:s', current_time('timestamp'));
+        break;
+
+    case'get_select_data':
+        $content_type = filter_input(INPUT_POST, 'content_type', FILTER_SANITIZE_STRING);
+        $responseJson->rand = filter_input(INPUT_POST, 'rand', FILTER_SANITIZE_STRING);
+
+        if(!$content_type){
+            $responseJson->msg = 'Error: Ajax Übertragungsfehler!';
+        }
+        global $editableOption;
+        $responseJson->section_select = $editableOption->hupa_api_edit_input_select($content_type);
+        $responseJson->output_select = $editableOption->hupa_api_edit_input_select('output_type');
+        $responseJson->status = true;
         break;
 }

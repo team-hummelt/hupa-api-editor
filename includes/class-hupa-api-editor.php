@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') or die();
 /**
  * The core plugin class.
  *
@@ -14,11 +15,11 @@
  * @author     Jens Wiecker <email@jenswiecker.de>
  */
 
-use JetBrains\PhpStorm\NoReturn;
+use Hupa\ApiEditorDatabase\Hupa_Api_Editor_Database;
+use Hupa\ApiEditorPluginLicense\HupaApiPluginApiEditorServerHandle;
 use Hupa\RegisterApiEditorLicense\RegisterHupaApiEditor;
 use HupaApiEditorAPIExec\EXEC\HupaApiEditorLicenseExecAPI;
-use Hupa\ApiEditorPluginLicense\HupaApiPluginApiEditorServerHandle;
-use Hupa\ApiEditorDatabase\Hupa_Api_Editor_Database;
+use JetBrains\PhpStorm\NoReturn;
 
 
 class Hupa_Api_Editor
@@ -109,6 +110,22 @@ class Hupa_Api_Editor
      */
     protected $db_version;
 
+    /**
+     * Sidebar WP-Rest Api Object.
+     *
+     * @since    1.0.0
+     * @var object  The sidebar Rest-Api class.
+     */
+    public $sidebar;
+
+    /**
+     * Widget WP-Rest Api Object.
+     *
+     * @since    1.0.0
+     * @var object  The widget Rest-Api class.
+     */
+    public $widget;
+
 
     /**
      * Define the core functionality of the plugin.
@@ -134,7 +151,7 @@ class Hupa_Api_Editor
             $this->db_version = '1.0.0';
         }
 
-        $this->plugin_name = 'hupa-api-editor';
+        $this->plugin_name = HUPA_API_EDITOR_BASENAME;
         $this->main = $this;
 
         //Check PHP AND WordPress Version
@@ -149,6 +166,8 @@ class Hupa_Api_Editor
         $this->set_editable_options();
         // Create OR Update Database
         $this->hupa_api_editor_update_database();
+        //Rest-API Init Register Routes
+        $this->register_widget_sidebar_rest_api_routes();
         if (get_option('hupa_api_editor_product_install_authorize')) {
             $this->define_admin_hooks();
             $this->define_public_hooks();
@@ -235,6 +254,20 @@ class Hupa_Api_Editor
          * side of the site.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-hupa-api-editor-public.php';
+
+
+        /**
+         * The class responsible for defining Sidebar WP-Rest Routes
+         * side of the site.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/Rest-Api/Sidebar-Routes.php';
+
+
+        /**
+         * The class responsible for defining Widget WP-Rest Routes
+         * side of the site.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/Rest-Api/Widget-Routes.php';
 
         $this->loader = new Hupa_Api_Editor_Loader();
 
@@ -381,6 +414,20 @@ class Hupa_Api_Editor
     }
 
     /**
+     * Register WIDGET AND Sidebar Rest-Api Endpoint
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function register_widget_sidebar_rest_api_routes() {
+        $this->sidebar = new Sidebar();
+        $this->widget = new Widget();
+        $this->loader->add_action('rest_api_init', $this->sidebar, 'register_routes');
+        $this->loader->add_action('rest_api_init', $this->widget, 'register_routes');
+    }
+
+    /**
      * Register all the hooks related to the admin area functionality
      * of the plugin.
      *
@@ -478,6 +525,9 @@ class Hupa_Api_Editor
 
         $this->loader->add_action('wp_enqueue_scripts', $this->public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $this->public, 'enqueue_scripts');
+
+        // ADD Excerpt CSS Class -> entry-excerpt
+        $this->loader->add_action('the_excerpt', $this->public, 'hupa_api_add_excerpt_class');
     }
 
     /**

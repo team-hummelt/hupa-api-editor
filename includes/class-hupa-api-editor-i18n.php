@@ -1,18 +1,5 @@
 <?php
-
-/**
- * Define the internationalization functionality
- *
- * Loads and defines the internationalization files for this plugin
- * so that it is ready for translation.
- *
- * @link       http://jenswiecker.de
- * @since      1.0.0
- *
- * @package    Hupa_Api_Editor
- * @subpackage Hupa_Api_Editor/includes
- */
-
+defined('ABSPATH') or die();
 /**
  * Define the internationalization functionality.
  *

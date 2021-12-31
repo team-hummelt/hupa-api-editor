@@ -1,7 +1,7 @@
 <?php
 
 namespace Hupa\ApiEditorDatabase;
-
+defined('ABSPATH') or die();
 use stdClass;
 
 
@@ -18,12 +18,6 @@ use stdClass;
  * @subpackage Hupa_Api_Editor/includes
  */
 
-/**
- * @since      1.0.0
- * @package    Hupa_Api_Editor
- * @subpackage Hupa_Api_Editor/includes
- * @author     Jens Wiecker <email@jenswiecker.de>
- */
 class Hupa_Api_Editor_Database
 {
 
@@ -104,8 +98,10 @@ class Hupa_Api_Editor_Database
         if (!$getSection->status) {
             $defaults = $this->get_theme_default_settings();
             foreach ($defaults['editor_sections_default'] as $tmp) {
-                $record->input_type = $tmp['input_type'];
-                $record->css_class = $tmp['input_css'];
+                $record->content_type = $tmp['content_type'];
+                $record->output_type = $tmp['output_type'];
+                $record->section_type = $tmp['section_type'];
+                $record->css_selector = $tmp['css_selector'];
                 $record->posts_aktiv = $tmp['posts_aktiv'];
                 $record->pages_aktiv = $tmp['pages_aktiv'];
                 $this->hupa_api_editor_set_table_editor($record);
@@ -161,10 +157,12 @@ class Hupa_Api_Editor_Database
             array(
                 'posts_aktiv' => $record->posts_aktiv,
                 'pages_aktiv' => $record->pages_aktiv,
-                'input_type' => $record->input_type,
-                'css_class' => $record->css_class,
+                'output_type' => $record->output_type,
+                'content_type' => $record->content_type,
+                'section_type' => $record->section_type,
+                'css_selector' => $record->css_selector,
             ),
-            array('%d', '%d', '%s', '%s')
+            array('%d', '%d', '%s', '%s', '%s', '%s')
         );
 
         $return = new stdClass();
@@ -198,11 +196,13 @@ class Hupa_Api_Editor_Database
             array(
                 'posts_aktiv' => $record->posts_aktiv,
                 'pages_aktiv' => $record->pages_aktiv,
-                'input_type' => $record->input_type,
-                'css_class' => $record->css_class,
+                'output_type' => $record->output_type,
+                'content_type' => $record->content_type,
+                'section_type' => $record->section_type,
+                'css_selector' => $record->css_selector,
             ),
             array('id' => $record->id),
-            array('%d', '%d', '%s', '%s'),
+            array('%d', '%d', '%s', '%s', '%s', '%s'),
             array('%d')
         );
     }
@@ -270,8 +270,10 @@ class Hupa_Api_Editor_Database
         id mediumint(11) NOT NULL AUTO_INCREMENT,
         posts_aktiv tinyint(1) NOT NULL DEFAULT 1,
         pages_aktiv tinyint(1) NOT NULL DEFAULT 1,
-        input_type varchar(24) NOT NULL DEFAULT 'textarea',
-        css_class varchar(255) NOT NULL DEFAULT 'entry-content p',
+        content_type varchar(24) NOT NULL,
+        output_type varchar(24) NOT NULL,
+        section_type varchar(24) NOT NULL,
+        css_selector varchar(255) NOT NULL,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
        PRIMARY KEY (id)
      ) $charset_collate;";

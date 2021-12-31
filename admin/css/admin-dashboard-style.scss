@@ -307,7 +307,7 @@ background-color: #fdfdfd!important;
   .section_field{
     padding: .75rem;
     &.active {
-      background:#f9fff2;
+      background:#fefffa;
     }
     &.deactivated {
       background: #fff6f6;
@@ -367,6 +367,9 @@ background-color: #fdfdfd!important;
     color: #fff;
   }
 
+  .hupa-hide {
+    display: none!important;
+  }
 
   .bg-hupa {
     background-color: $hupa-color;

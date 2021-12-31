@@ -1,15 +1,5 @@
 <?php
-
-/**
- * The public-facing functionality of the plugin.
- *
- * @link       http://jenswiecker.de
- * @since      1.0.0
- *
- * @package    Hupa_Api_Editor
- * @subpackage Hupa_Api_Editor/public
- */
-
+defined('ABSPATH') or die();
 /**
  * The public-facing functionality of the plugin.
  *
@@ -97,7 +87,7 @@ class Hupa_Api_Editor_Public
          * This function is provided for demonstration purposes only.
          *
          * An instance of this class should be passed to the run() function
-         * defined in Hupa_Api_Editor_Loader as all of the hooks are defined
+         * defined in Hupa_Api_Editor_Loader as all the hooks are defined
          * in that particular class.
          *
          * The Hupa_Api_Editor_Loader will then create the relationship
@@ -137,6 +127,15 @@ class Hupa_Api_Editor_Public
     }
 
     /**
+     * ADD Excerpt CSS-Class.
+     *
+     * @since    1.0.0
+     */
+    public function hupa_api_add_excerpt_class():string {
+        return '<div class="entry-excerpt">' . get_the_excerpt() . '</div>';
+    }
+
+    /**
      * Register the JavaScript for the public-facing side of the site.
      *
      * @since    1.0.0
@@ -148,7 +147,7 @@ class Hupa_Api_Editor_Public
          * This function is provided for demonstration purposes only.
          *
          * An instance of this class should be passed to the run() function
-         * defined in Hupa_Api_Editor_Loader as all of the hooks are defined
+         * defined in Hupa_Api_Editor_Loader as all the hooks are defined
          * in that particular class.
          *
          * The Hupa_Api_Editor_Loader will then create the relationship
