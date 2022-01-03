@@ -263,6 +263,13 @@ function render_css_sections_template(data = false, selected) {
     }
     html += `</select>
     </div>
+    <div class="widget-select${rand} col-xxl-4 col-xl-5 col-12">
+       <label for="selectWidget${rand}" class="form-label mb-1"> Widget</label>
+    <select id="selectWidget${rand}" 
+    class="form-control mb-3 me-xxl-2 pe-2 me-0" name="content_type"
+    style="max-width: 100%" disabled>`;
+
+    html +=` </select></div>
     </div>
     
     <div class="w-100 row gx-2 mt-2">

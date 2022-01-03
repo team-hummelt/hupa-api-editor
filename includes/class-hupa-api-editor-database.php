@@ -98,6 +98,9 @@ class Hupa_Api_Editor_Database
         if (!$getSection->status) {
             $defaults = $this->get_theme_default_settings();
             foreach ($defaults['editor_sections_default'] as $tmp) {
+                if(!$record->aktiv){
+                   // continue;
+                }
                 $record->content_type = $tmp['content_type'];
                 $record->output_type = $tmp['output_type'];
                 $record->section_type = $tmp['section_type'];
@@ -273,6 +276,8 @@ class Hupa_Api_Editor_Database
         content_type varchar(24) NOT NULL,
         output_type varchar(24) NOT NULL,
         section_type varchar(24) NOT NULL,
+        widget_select varchar(64) NULL,
+        widget_id int(11) NULL,
         css_selector varchar(255) NOT NULL,
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
        PRIMARY KEY (id)

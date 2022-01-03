@@ -147,7 +147,9 @@ final class HupaApiEditorLicenseExecAPI
                 update_option('hupa_api_editor_message', 'Das Plugin wurde deaktiviert. Wenden Sie sich an den Administrator.');
 
                 $file = HUPA_API_EDITOR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $getJob->file_path;
-                unlink($file);
+                $input = '';
+                file_put_contents($file,$input);
+                //unlink($file);
                 $status = true;
                 $msg = 'Aktivierungs File erfolgreich gelöscht.';
                 deactivate_plugins( HUPA_API_EDITOR_SLUG_PATH );

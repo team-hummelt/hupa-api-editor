@@ -114,27 +114,27 @@ class Hupa_Editable_Options
                 'bezeichnung'   => __('Textarea', 'hupa-api-editor')
             ],
             '3' => [
-                'aktiv' => 1,
+                'aktiv' => 0,
                 'id'            => 'number',
                 'bezeichnung'   => __('Number', 'hupa-api-editor')
             ],
             '4' => [
-                'aktiv' => 1,
+                'aktiv' => 0,
                 'id'            => 'date',
                 'bezeichnung'   => __('Date', 'hupa-api-editor')
             ],
             '5' => [
-                'aktiv' => 1,
+                'aktiv' => 0,
                 'id'            => 'email',
                 'bezeichnung'   => __('E-Mail', 'hupa-api-editor')
             ],
             '6' => [
-                'aktiv' => 1,
+                'aktiv' => 0,
                 'id' => 'url',
                 'bezeichnung' => __('URL', 'hupa-api-editor')
             ],
             '7' => [
-                'aktiv' => 1,
+                'aktiv' => 0,
                 'id' => 'inline',
                 'bezeichnung' => __('Inline Element', 'hupa-api-editor')
             ],
@@ -241,12 +241,12 @@ class Hupa_Editable_Options
             ],
             '1' => [
                 'aktiv' => 1,
-                'id' => 'title',
+                'id' => 'widget-title',
                 'bezeichnung' => 'Title'
             ],
             '2' => [
                 'aktiv' => 1,
-                'id' => 'text',
+                'id' => 'widget-text',
                 'bezeichnung' => 'Text'
             ],
         ];
@@ -259,12 +259,12 @@ class Hupa_Editable_Options
             ],
             '1' => [
                 'aktiv' => 1,
-                'id' => 'title',
+                'id' => 'widget-title',
                 'bezeichnung' => 'Title'
             ],
             '2' => [
                 'aktiv' => 1,
-                'id' => 'content',
+                'id' => 'widget-content',
                 'bezeichnung' => 'Content'
             ],
         ];
@@ -281,12 +281,12 @@ class Hupa_Editable_Options
                 'bezeichnung'   => __('Post / Page', 'hupa-api-editor')
             ],
             '2' => [
-                'aktiv' => 1,
+                'aktiv' => 0,
                 'id'            => 'text_widget',
                 'bezeichnung'   => __('Text Widget', 'hupa-api-editor')
             ],
             '3' => [
-                'aktiv' => 1,
+                'aktiv' => 0,
                 'id'            => 'html_widget',
                 'bezeichnung'   => __('HTML Widget', 'hupa-api-editor')
             ]

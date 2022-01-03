@@ -19,6 +19,7 @@ use Hupa\ApiEditorDatabase\Hupa_Api_Editor_Database;
 use Hupa\ApiEditorPluginLicense\HupaApiPluginApiEditorServerHandle;
 use Hupa\RegisterApiEditorLicense\RegisterHupaApiEditor;
 use HupaApiEditorAPIExec\EXEC\HupaApiEditorLicenseExecAPI;
+use Hupa\ApiRestRoutes\Hupa_Meta_Routes;
 use JetBrains\PhpStorm\NoReturn;
 
 
@@ -111,6 +112,15 @@ class Hupa_Api_Editor
     protected $db_version;
 
     /**
+     * The current Post ID.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      int $post_id The current Post ID.
+     */
+    protected $post_id;
+
+    /**
      * Sidebar WP-Rest Api Object.
      *
      * @since    1.0.0
@@ -125,6 +135,14 @@ class Hupa_Api_Editor
      * @var object  The widget Rest-Api class.
      */
     public $widget;
+
+    /**
+     * hupa-meta WP-Rest Api Object.
+     *
+     * @since    1.0.0
+     * @var object  The Meta Rest-Api class.
+     */
+    public $hupa_meta;
 
 
     /**
@@ -167,7 +185,7 @@ class Hupa_Api_Editor
         // Create OR Update Database
         $this->hupa_api_editor_update_database();
         //Rest-API Init Register Routes
-        $this->register_widget_sidebar_rest_api_routes();
+        $this->register_api_editor_rest_api_routes();
         if (get_option('hupa_api_editor_product_install_authorize')) {
             $this->define_admin_hooks();
             $this->define_public_hooks();
@@ -268,6 +286,13 @@ class Hupa_Api_Editor
          * side of the site.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/Rest-Api/Widget-Routes.php';
+
+
+        /**
+         * The class responsible for defining Hupa-Meta WP-Rest Routes
+         * side of the site.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/Rest-Api/Hupa-Meta-Routes.php';
 
         $this->loader = new Hupa_Api_Editor_Loader();
 
@@ -414,17 +439,20 @@ class Hupa_Api_Editor
     }
 
     /**
-     * Register WIDGET AND Sidebar Rest-Api Endpoint
+     * Register API EDITOR Rest-Api Endpoints
      * of the plugin.
      *
      * @since    1.0.0
      * @access   private
      */
-    private function register_widget_sidebar_rest_api_routes() {
+    private function register_api_editor_rest_api_routes() {
         $this->sidebar = new Sidebar();
         $this->widget = new Widget();
+        $this->hupa_meta = new Hupa_Meta_Routes($this->get_post_id());
+
         $this->loader->add_action('rest_api_init', $this->sidebar, 'register_routes');
         $this->loader->add_action('rest_api_init', $this->widget, 'register_routes');
+        $this->loader->add_action('rest_api_init', $this->hupa_meta, 'register_routes');
     }
 
     /**
@@ -580,6 +608,17 @@ class Hupa_Api_Editor
     public function get_version(): string
     {
         return $this->version;
+    }
+
+    /**
+     * Post ID.
+     *
+     * @return int|null The current post ID.
+     * @since     1.0.0
+     */
+    public function get_post_id():int|null {
+        global $post;
+        return $post->ID;
     }
 
 }

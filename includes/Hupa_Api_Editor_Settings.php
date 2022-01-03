@@ -66,14 +66,14 @@ trait Hupa_Api_Editor_Settings
                     'section_type' => 'title',
                 ],
                 '1' => [
-                    'css_selector' => 'entry-content',
+                    'css_selector' => 'has-excerpt',
                     'posts_aktiv' => $this->posts_aktiv,
                     'pages_aktiv' => $this->pages_aktiv,
                     'content_type' => 'post',
                     'output_type' => 'textarea',
-                    'section_type' => 'content',
+                    'section_type' => 'excerpt',
                 ],
-                '2' => [
+               /* '2' => [
                     'css_selector' => 'widget-title',
                     'posts_aktiv' => $this->posts_aktiv,
                     'pages_aktiv' => $this->pages_aktiv,
@@ -104,7 +104,7 @@ trait Hupa_Api_Editor_Settings
                     'content_type' => 'html_widget',
                     'output_type' => 'textarea',
                     'section_type' => 'content',
-                ]
+                ]*/
             ],
 
             'input_edit_form_default' => [

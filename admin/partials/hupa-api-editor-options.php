@@ -12,6 +12,8 @@ $options = $editableOption->hupa_set_editable_options();
 //Optionen Settings
 $opt = apply_filters('get_hupa_api_settings', false);
 
+$t = wp_get_sidebars_widgets();
+//print_r($t);
 ?>
 
 <div class="api-editor">

@@ -132,7 +132,16 @@ class Hupa_Api_Editor_Public
      * @since    1.0.0
      */
     public function hupa_api_add_excerpt_class():string {
-        return '<div class="entry-excerpt">' . get_the_excerpt() . '</div>';
+        if(is_archive() && is_category()) {
+            $dataType = 'category';
+        } elseif(is_archive() && !is_category()){
+            $dataType = 'archiv';
+        } elseif (is_author()) {
+            $dataType = 'author';
+        } else {
+            $dataType = 'unbekannt';
+        }
+        return '<div data-type="'.$dataType.'" data-id="'.get_the_ID().'" class="has-excerpt">' . get_the_excerpt() . '</div>';
     }
 
     /**
@@ -162,6 +171,7 @@ class Hupa_Api_Editor_Public
             wp_enqueue_script($this->plugin_name . '-editable-autogrow-textarea', plugin_dir_url(__FILE__) . 'js/tools/jquery.autogrowtextarea.js', array('jquery'), $this->version, true);
             wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/hupa-api-editor-public.js', array('jquery'), $this->version, true);
             wp_enqueue_script('wp-api');
+            $term_obj_list = get_the_terms( get_the_ID(), 'category' );
 
             global $editableOption;
             $title_nonce = wp_create_nonce('hupa_api_editor_public_handle');
@@ -172,6 +182,9 @@ class Hupa_Api_Editor_Public
                 'nonce' => $title_nonce,
                 'post_id' => get_the_ID(),
                 'is_page' => is_page(),
+                'is_category' => is_category(),
+                'is_archive' => is_archive(),
+                'is_author' => is_author(),
                 'language' => $editableOption->hupa_api_editor_language()
             ));
         endif;

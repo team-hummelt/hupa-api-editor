@@ -55,7 +55,7 @@ switch ($method) {
 
         $settings = apply_filters('get_hupa_api_settings', false);
         $retArr = [];
-//print_r($sections->record);
+
         foreach ($sections->record as $tmp) {
             if (!$tmp->pages_aktiv && get_post_type() == 'page') {
                 continue;
@@ -91,7 +91,6 @@ switch ($method) {
                     $form_class = $settings->textarea_form_class;
                     $symbol = (bool)$settings->textarea_symbol == '1';
                     $data_what = 'content';
-
                     break;
                 case 'inline':
                     $type = 'inline';
@@ -117,11 +116,11 @@ switch ($method) {
                         $save = '';
                         $cancel = '';
                     }
-                    $type = $tmp->input_type;
+
                     $form_class = $settings->input_form_class;
                     $form_wrapper = $settings->input_form_wrapper;
                     if ($settings->input_label) {
-                        $label = $editableOption->hupa_api_editor_labels($tmp->input_type);
+                        $label = $editableOption->hupa_api_editor_labels($tmp->output_type);
                     } else {
                         $label = '';
                     }
@@ -134,6 +133,7 @@ switch ($method) {
                 'css_selector' => $tmp->css_selector,
                 'form_wrapper' => $form_wrapper,
                 'form_class' => $form_class,
+                'section_type' => $tmp->section_type,
                 'submit_class' => $submit_class,
                 'cancel_class' => $cancel_class,
                 'symbol' => $symbol,
