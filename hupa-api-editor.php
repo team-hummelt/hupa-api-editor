@@ -81,7 +81,7 @@ if ( is_admin() ) {
 
 
     if( ! class_exists( 'Puc_v4_Factory' ) ) {
-        require_once join( DIRECTORY_SEPARATOR, array( HUPA_API_EDITOR_SLUG_PATH, 'vendor', 'autoload.php') );
+        require_once 'vendor/autoload.php';
     }
 
     if ( get_option( 'hupa_api_editor_product_install_authorize' ) ) {
