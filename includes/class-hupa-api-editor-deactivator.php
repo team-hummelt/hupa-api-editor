@@ -1,5 +1,5 @@
 <?php
-
+defined('ABSPATH') or die();
 /**
  * Fired during plugin deactivation
  *

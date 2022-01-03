@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Hupa API Editor
  * Plugin URI:        https://www.hummelt-werbeagentur.de/leistungen/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Inline Editor für Seiten, Beiträge und Archive.
  * Version:           1.0.0
  * Author:            Jens Wiecker
  * Author URI:        http://jenswiecker.de
@@ -29,22 +29,24 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-
 //PLUGIN VERSION
 $plugin_data = get_file_data(dirname(__FILE__) . '/hupa-api-editor.php', array('Version' => 'Version'), false);
 define("HUPA_API_EDITOR_VERSION", $plugin_data['Version']);
+//DEFINE DATENBANK VERSION:
+const HUPA_API_EDITOR_DB_VERSION = '1.0.0';
 //DEFINE MIN PHP VERSION
 const HUPA_API_EDITOR_MIN_PHP_VERSION = '8.0';
 //DEFINE MIN WordPress VERSION
 const HUPA_API_EDITOR_MIN_WP_VERSION = '5.7';
-//PLUGIN ROOT PATH
+//DEFINE PLUGIN ROOT PATH
 define('HUPA_API_EDITOR_PLUGIN_DIR', dirname(__FILE__));
-//PLUGIN ADMIN DIR
+//DEFINE PLUGIN ADMIN DIR
 define('HUPA_API_EDITOR_ADMIN_DIR', dirname(__FILE__). DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR);
-//PLUGIN SLUG
+//DEFINE PLUGIN SLUG
 define('HUPA_API_EDITOR_SLUG_PATH', plugin_basename(__FILE__));
+//DEFINE PLUGIN BASENAME
 define('HUPA_API_EDITOR_BASENAME', plugin_basename(__DIR__));
-//PLUGIN URL
+//DEFINE PLUGIN URL
 define('HUPA_API_EDITOR_PLUGIN_URL', plugins_url('hupa-api-editor'));
 
 

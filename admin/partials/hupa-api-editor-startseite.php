@@ -23,7 +23,6 @@ defined('ABSPATH') or die();
                     </h5>
                 </div>
                 <hr>
-
                 <div class="settings-btn-group d-block d-md-flex flex-wrap">
                     <button data-site="<?= __('Settings', 'hupa-api-editor') ?>"
                             data-type="start"

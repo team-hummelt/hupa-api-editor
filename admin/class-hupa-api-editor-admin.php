@@ -1,15 +1,5 @@
 <?php
-
-/**
- * The admin-specific functionality of the plugin.
- *
- * @link       http://jenswiecker.de
- * @since      1.0.0
- *
- * @package    Hupa_Api_Editor
- * @subpackage Hupa_Api_Editor/admin
- */
-
+defined('ABSPATH') or die();
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -70,7 +60,7 @@ class Hupa_Api_Editor_Admin {
      */
     public function create_menu():void {
 
-        add_menu_page(
+      /*  add_menu_page(
             __( 'API-Editor', 'hupa-api-editor' ),
             __( 'API-Editor', 'hupa-api-editor' ),
             'manage_options',
@@ -89,6 +79,19 @@ class Hupa_Api_Editor_Admin {
         );
 
         add_action('load-' . $hook_suffix, array($this, 'hupa_api_editor_load_ajax_admin_options_script'));
+      */
+
+
+        /** OPTIONS PAGE */
+        $hook_suffix = add_options_page(
+            __( 'HUPA API-Editor', 'hupa-api-editor' ),
+            '<img class="menu_hupa" src="'. HUPA_API_EDITOR_PLUGIN_URL .'/admin/images/hupa-red-sm.png" alt="" /> '. __( 'HUPA API-Editor', 'hupa-api-editor' ),
+            'manage_options',
+            'hupa-api-editor-options',
+            array( $this, 'hupa_api_editor_options_page' )
+        );
+
+        add_action( 'load-' . $hook_suffix, array( $this, 'hupa_api_editor_load_ajax_admin_options_script' ) );
 
     }
 
@@ -110,11 +113,11 @@ class Hupa_Api_Editor_Admin {
                     '<a href="%s">%s</a>',
                     add_query_arg(
                         array(
-                            'page' => 'api-editor'
+                            'page' => 'hupa-api-editor-options'
                         ),
-                        admin_url( 'admin.php' )
+                        admin_url( 'options-general.php' )
                     ),
-                    __( "Settings", "api-editor" )
+                    __( "Settings", "hupa-api-editor" )
                 )
             )
         );
@@ -123,6 +126,10 @@ class Hupa_Api_Editor_Admin {
 
     public function admin_hupa_api_editor_page() {
         require 'partials/hupa-api-editor-startseite.php';
+    }
+
+    public function hupa_api_editor_options_page() {
+        require 'partials/hupa-api-editor-options.php';
     }
 
     public function hupa_api_editor_load_ajax_admin_options_script() {
@@ -137,6 +144,7 @@ class Hupa_Api_Editor_Admin {
     public function prefix_ajax_HupaApiEditorHandle(): void {
         $responseJson = null;
         check_ajax_referer( 'hupa_api_editor_admin_handle' );
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-hupa-api-editor-ajax.php';
         wp_send_json( $responseJson );
     }
 
@@ -159,7 +167,7 @@ class Hupa_Api_Editor_Admin {
 		 * class.
 		 */
 
-        wp_enqueue_style('hupa-starter-admin-bs-style', plugin_dir_url( __FILE__ ) . 'css/bs/bootstrap.min.css', array(), $this->version, 'all');
+        wp_enqueue_style('hupa-api-editor-bs-style', plugin_dir_url( __FILE__ ) . 'css/bs/bootstrap.min.css', array(), $this->version, 'all');
         wp_enqueue_style('hupa-starter-admin-icons', plugin_dir_url( __FILE__ ) . 'css/font-awesome.css', array(), $this->version, 'all');
         wp_enqueue_style($this->plugin_name.'-bs5-data-tables', plugin_dir_url( __FILE__ ) . 'css/tools/dataTables.bootstrap5.min.css', array(), $this->version, 'all');
         wp_enqueue_style($this->plugin_name.'-admin-dashboard-style', plugin_dir_url( __FILE__ ) . 'css/admin-dashboard-style.css', array(), $this->version, 'all');

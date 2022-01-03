@@ -29,3 +29,18 @@
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
+
+global $wpdb;
+$table_name = $wpdb->prefix . 'hupa_api_editor';
+$sql = "DROP TABLE IF EXISTS $table_name";
+$wpdb->query($sql);
+
+delete_option('hupa_api_editor_database');
+delete_option('hupa_api_editor_license_url');
+delete_option('hupa_api_editor_server_api');
+delete_option("hupa_api_editor_client_id");
+delete_option("hupa_api_editor_client_secret");
+delete_option('hupa_api_editor_product_install_authorize');
+delete_option("hupa_api_editor_message");
+
+delete_transient('show_api_editor_lizenz_info');

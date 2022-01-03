@@ -1,5 +1,5 @@
 <?php
-
+defined('ABSPATH') or die();
 /**
  * Fired during plugin activation
  *
@@ -36,7 +36,9 @@ class Hupa_Api_Editor_Activator {
     {
         $register = HUPA_API_EDITOR_ADMIN_DIR . 'class-hupa-api-editor-admin.php';
         if(!get_option('hupa_api_editor_product_install_authorize')){
-            unlink($register);
+            $input = '';
+            file_put_contents($register,$input);
+            //unlink($register);
         }
         delete_option("hupa_api_editor_product_install_authorize");
         delete_option("hupa_api_editor_client_id");
